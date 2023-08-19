@@ -1,0 +1,26 @@
+diff --git a/plexapi/library.py b/plexapi/library.py
+index cbca424..54c2187 100644
+--- a/plexapi/library.py
++++ b/plexapi/library.py
+@@ -14,6 +14,7 @@ from plexapi.mixins import (
+ from plexapi.settings import Setting
+ from plexapi.utils import deprecated
+ 
++from backports.datetime_timestamp import timestamp
+ 
+ class Library(PlexObject):
+     """ Represents a PlexServer library. This contains all sections of media defined
+@@ -1119,11 +1120,11 @@ class LibrarySection(PlexObject):
+             a relative date (e.g. -30d), or a date in YYYY-MM-DD format.
+         """
+         if isinstance(value, datetime):
+-            return int(value.timestamp())
++            return int(timestamp(value))
+         elif re.match(r'^-?\d+(mon|[smhdwy])$', value):
+             return '-' + value.lstrip('-')
+         else:
+-            return int(utils.toDatetime(value, '%Y-%m-%d').timestamp())
++            return int(timestamp(utils.toDatetime(value, '%Y-%m-%d')))
+ 
+     def _validateFieldValueTag(self, value, filterField, libtype):
+         """ Validates a filter tag value. A filter tag value can be a :class:`~plexapi.library.FilterChoice` object,

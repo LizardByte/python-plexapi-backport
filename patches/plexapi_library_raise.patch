@@ -1,0 +1,121 @@
+diff --git a/plexapi/library.py b/plexapi/library.py
+index cbca424..ce9bbdd 100644
+--- a/plexapi/library.py
++++ b/plexapi/library.py
+@@ -70,7 +70,7 @@ class Library(PlexObject):
+         try:
+             return self._sectionsByTitle[normalized_title]
+         except KeyError:
+-            raise NotFound(f'Invalid library section: {title}') from None
++            raise NotFound(f'Invalid library section: {title}')
+ 
+     def sectionByID(self, sectionID):
+         """ Returns the :class:`~plexapi.library.LibrarySection` that matches the specified sectionID.
+@@ -86,7 +86,7 @@ class Library(PlexObject):
+         try:
+             return self._sectionsByID[sectionID]
+         except KeyError:
+-            raise NotFound(f'Invalid library sectionID: {sectionID}') from None
++            raise NotFound(f'Invalid library sectionID: {sectionID}')
+ 
+     def hubs(self, sectionID=None, identifier=None, **kwargs):
+         """ Returns a list of :class:`~plexapi.library.Hub` across all library sections.
+@@ -606,7 +606,7 @@ class LibrarySection(PlexObject):
+             msg = f"Unable to find item with title '{title}'"
+             if kwargs:
+                 msg += f" and kwargs {kwargs}"
+-            raise NotFound(msg) from None
++            raise NotFound(msg)
+ 
+     def getGuid(self, guid):
+         """ Returns the media item with the specified external Plex, IMDB, TMDB, or TVDB ID.
+@@ -651,7 +651,7 @@ class LibrarySection(PlexObject):
+                 match = dummy.matches(agent=self.agent, title=guid.replace('://', '-'))
+                 return self.search(guid=match[0].guid)[0]
+         except IndexError:
+-            raise NotFound(f"Guid '{guid}' is not found in the library") from None
++            raise NotFound(f"Guid '{guid}' is not found in the library")
+ 
+     def all(self, libtype=None, **kwargs):
+         """ Returns a list of all items from this library section.
+@@ -884,7 +884,7 @@ class LibrarySection(PlexObject):
+         except StopIteration:
+             availableLibtypes = [f.type for f in self.filterTypes()]
+             raise NotFound(f'Unknown libtype "{libtype}" for this library. '
+-                           f'Available libtypes: {availableLibtypes}') from None
++                           f'Available libtypes: {availableLibtypes}')
+ 
+     def fieldTypes(self):
+         """ Returns a list of available :class:`~plexapi.library.FilteringFieldType` for this library section. """
+@@ -907,7 +907,7 @@ class LibrarySection(PlexObject):
+         except StopIteration:
+             availableFieldTypes = [f.type for f in self.fieldTypes()]
+             raise NotFound(f'Unknown field type "{fieldType}" for this library. '
+-                           f'Available field types: {availableFieldTypes}') from None
++                           f'Available field types: {availableFieldTypes}')
+ 
+     def listFilters(self, libtype=None):
+         """ Returns a list of available :class:`~plexapi.library.FilteringFilter` for a specified libtype.
+@@ -1023,7 +1023,7 @@ class LibrarySection(PlexObject):
+             except StopIteration:
+                 availableFilters = [f.filter for f in self.listFilters(libtype)]
+                 raise NotFound(f'Unknown filter field "{field}" for libtype "{libtype}". '
+-                               f'Available filters: {availableFilters}') from None
++                               f'Available filters: {availableFilters}')
+                 
+         data = self._server.query(field.key)
+         return self.findItems(data, FilterChoice)
+@@ -1049,7 +1049,7 @@ class LibrarySection(PlexObject):
+             else:
+                 availableFields = [f.key for f in self.listFields(libtype)]
+                 raise NotFound(f'Unknown filter field "{field}" for libtype "{libtype}". '
+-                               f'Available filter fields: {availableFields}') from None
++                               f'Available filter fields: {availableFields}')
+ 
+         field = filterField.key
+         operator = self._validateFieldOperator(filterField, operator)
+@@ -1081,7 +1081,7 @@ class LibrarySection(PlexObject):
+         except StopIteration:
+             availableOperators = [o.key for o in self.listOperators(filterField.type)]
+             raise NotFound(f'Unknown operator "{operator}" for filter field "{filterField.key}". '
+-                           f'Available operators: {availableOperators}') from None
++                           f'Available operators: {availableOperators}')
+ 
+         return '&=' if and_operator else operator
+ 
+@@ -1110,7 +1110,7 @@ class LibrarySection(PlexObject):
+                 results.append(str(value))
+         except (ValueError, AttributeError):
+             raise BadRequest(f'Invalid value "{value}" for filter field "{filterField.key}", '
+-                             f'value should be type {fieldType.type}') from None
++                             f'value should be type {fieldType.type}')
+     
+         return results
+ 
+@@ -1176,7 +1176,7 @@ class LibrarySection(PlexObject):
+         except StopIteration:
+             availableSorts = [f.key for f in self.listSorts(libtype)]
+             raise NotFound(f'Unknown sort field "{sortField}" for libtype "{libtype}". '
+-                           f'Available sort fields: {availableSorts}') from None
++                           f'Available sort fields: {availableSorts}')
+ 
+         sortField = libtype + '.' + filterSort.key
+ 
+@@ -1621,7 +1621,7 @@ class LibrarySection(PlexObject):
+         try:
+             return self.collections(title=title, title__iexact=title)[0]
+         except IndexError:
+-            raise NotFound(f'Unable to find collection with title "{title}".') from None
++            raise NotFound(f'Unable to find collection with title "{title}".')
+ 
+     def collections(self, **kwargs):
+         """ Returns a list of collections from this library section.
+@@ -1650,7 +1650,7 @@ class LibrarySection(PlexObject):
+         try:
+             return self.playlists(title=title, title__iexact=title)[0]
+         except IndexError:
+-            raise NotFound(f'Unable to find playlist with title "{title}".') from None
++            raise NotFound(f'Unable to find playlist with title "{title}".')
+ 
+     def playlists(self, sort=None, **kwargs):
+         """ Returns a list of playlists from this library section. """

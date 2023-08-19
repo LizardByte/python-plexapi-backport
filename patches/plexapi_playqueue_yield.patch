@@ -1,0 +1,14 @@
+diff --git a/plexapi/playqueue.py b/plexapi/playqueue.py
+index 9835c0d..41ddb8a 100644
+--- a/plexapi/playqueue.py
++++ b/plexapi/playqueue.py
+@@ -74,7 +74,8 @@ class PlayQueue(PlexObject):
+         return self.playQueueTotalCount
+ 
+     def __iter__(self):
+-        yield from self.items
++        for x in self.items:
++            yield x
+ 
+     def __contains__(self, media):
+         """Returns True if the PlayQueue contains the provided media item."""

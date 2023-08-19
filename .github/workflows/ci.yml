@@ -1,0 +1,427 @@
+---
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backport:
+    name: Backport
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Git patches
+        run: |
+          echo "::group::apply git patches"
+          pushd python-plexapi
+          git apply -v --ignore-whitespace ../patches/*.patch
+          popd
+          echo "::endgroup::"
+
+      - name: Setup Python 2.7
+        uses: LizardByte/.github/actions/setup_python2@nightly
+
+      - name: Set up Python 2.7 Dependencies
+        run: |
+          echo "Installing Requirements"
+          python --version
+          python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade pip setuptools wheel
+
+          # install python requirements
+          python -m pip install --upgrade -r requirements_dev.txt
+
+      - name: Find python files
+        id: find_files
+        working-directory: python-plexapi
+        run: |
+          found_files=$(find . -type f -iname "*.py")
+          echo "found files: $found_files"
+          echo found_files=${found_files} >> $GITHUB_OUTPUT
+
+      - name: Patch plexapi python
+        env:
+          found_files: ${{ steps.find_files.outputs.found_files }}
+        working-directory: python-plexapi
+        run: |
+          # array of files to skip
+          skip_files=(./setup.py)
+
+          for file in ${found_files}; do
+            # skip files in skip_files array
+            if [[ " ${skip_files[@]} " =~ " ${file} " ]]; then
+              echo "Skipping ${file}"
+              continue
+            fi
+
+            echo "::group::patch ${file}"
+            echo "Replacing f-strings in ${file}"
+            # set a backup file path
+            temp_file="${file}temp.py"
+
+            # writing to the original file does not work, data will be missing
+            future-fstrings-show ${file} > ${temp_file}
+
+            # run future-fstrings for a second pass, to handle nested f-strings
+            # this also replaces the original file!
+            future-fstrings-show ${temp_file} > ${file}
+
+            # remove the temp file
+            rm -f ${temp_file}
+
+            echo "Applying autopep8 to ${file}"
+            python -m autopep8 --recursive --in-place --jobs $(nproc) --max-line-length 125 ${file}
+
+            echo "Applying pasteurize to ${file}"
+            # -x arg is not working, need to specify each fix to include
+            pasteurize -j $(nproc) --verbose --write --nobackups \
+              -f libfuturize.fixes.fix_future_standard_library \
+              -f libpasteurize.fixes.fix_add_all__future__imports \
+              -f libpasteurize.fixes.fix_add_future_standard_library_import \
+              -f libpasteurize.fixes.fix_annotations \
+              -f libpasteurize.fixes.fix_division \
+              -f libpasteurize.fixes.fix_fullargspec \
+              -f libpasteurize.fixes.fix_future_builtins \
+              -f libpasteurize.fixes.fix_imports \
+              -f libpasteurize.fixes.fix_imports2 \
+              -f libpasteurize.fixes.fix_kwargs \
+              -f libpasteurize.fixes.fix_newstyle \
+              -f libpasteurize.fixes.fix_printfunction \
+              -f libpasteurize.fixes.fix_throw \
+              -f libpasteurize.fixes.fix_unpacking \
+              ${file}
+
+            # -f libfuturize.fixes.fix_future_standard_library \  # tbd
+            # -f libpasteurize.fixes.fix_add_all__future__imports \  # adds absolute import, division, print_function, unicode_literals
+            # -f libpasteurize.fixes.fix_add_future_standard_library_import \  # from future import standard_library... install_aliases()
+            # -f libpasteurize.fixes.fix_annotations \  # tbd
+            # -f libpasteurize.fixes.fix_division \  # division is different in Python 3
+            # -f libpasteurize.fixes.fix_fullargspec \  # tbd
+            # -f libpasteurize.fixes.fix_future_builtins \  # from builtins import next, round, int, str, super, etc.
+            # -f libpasteurize.fixes.fix_getcwd  \  # replaces os.getcwd with os.getcwdu (unicode version)
+            # -f libpasteurize.fixes.fix_imports \  # tbd
+            # -f libpasteurize.fixes.fix_imports2 \  # from future import standard_library... install_aliases()
+            # -f libpasteurize.fixes.fix_kwargs \  # tbd
+            # -f libpasteurize.fixes.fix_newstyle \  # tbd
+            # -f libpasteurize.fixes.fix_printfunction \  # tbd
+            # -f libpasteurize.fixes.fix_throw \  # tbd
+            # -f libpasteurize.fixes.fix_unpacking \  # tbd
+
+            # excluding these fixes
+            # libpasteurize.fixes.fix_getcwd  # cwd probably doesn't need to be unicode
+
+            # remove `from __future__ import unicode_literals` from each file
+            echo "Removing unwanted __future__ imports from ${file}"
+            sed -i '/from __future__ import unicode_literals/d' ${file}
+          
+            echo "Removing unwanted from builtin imports from ${file}"
+            sed -i '/from builtins import int/d' ${file}
+            sed -i '/from builtins import open/d' ${file}
+            sed -i '/from builtins import str/d' ${file}
+            sed -i '/from builtins import super/d' ${file}
+            sed -i '/from builtins import \*/d' ${file}
+
+            # git diff to github job summary
+            echo "### ${file}" >> $GITHUB_STEP_SUMMARY
+            echo '```diff' >> $GITHUB_STEP_SUMMARY
+            echo "$(git diff ${file})" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+
+            echo "::endgroup::"
+          done
+
+          # patch the README examples
+          echo "::group::patch README examples"
+          echo "Replacing f-strings in README examples"
+          # set a backup file path
+          file="./README.rst"
+          temp_file="./README.rsttemp"
+          future-fstrings-show ${file} > ${temp_file}
+          future-fstrings-show ${temp_file} > ${file}
+          rm -f ${temp_file}
+          echo "::endgroup::"
+
+      - name: Merge backport specific files
+        run: |
+          # copy custom backports
+          cp -f -r ./plexapi_backports.py ./python-plexapi/plexapi/backports.py
+
+          # copy test configs
+          cp -f ./.flake8 ./python-plexapi/.flake8-backport
+
+          # remove line that starts with `requests==` from requirements_dev.txt
+          # (it will interfere with the main requirements.txt)
+          sed -i '/^requests==/d' ./python-plexapi/requirements_dev.txt
+
+          # apply `;python_version>="3"` to every requirement in requirements.txt if line does not start with `#`
+          # upstream is using python 3.8... so let them manage 3.8 or greater deps
+          sed -i '/^[^#]/ s/$/;python_version>="3.8"/' ./python-plexapi/requirements.txt
+          sed -i '/^[^#]/ s/$/;python_version>="3.8"/' ./python-plexapi/requirements_dev.txt
+
+          # merge requirements
+          cat ./requirements.txt >> ./python-plexapi/requirements.txt
+          cat ./requirements_dev.txt >> ./python-plexapi/requirements_dev.txt
+
+          # # copy requirements
+          # cp -f ./requirements.txt ./python-plexapi/requirements.txt
+          # cp -f ./requirements_dev.txt ./python-plexapi/requirements_dev.txt
+
+          # amend our readme with plexapi readme
+          og_readme=$(cat ./python-plexapi/README.rst)
+          cp -f ./README.rst ./python-plexapi/README.rst
+          echo "${og_readme}" >> ./python-plexapi/README.rst
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-plexapi-backport
+          if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
+          path: |
+            ${{ github.workspace }}/python-plexapi
+            !**/*.git
+
+  build:
+    name: Build
+    needs:
+      - backport
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: python-plexapi-backport
+
+      - name: Setup Python 2.7
+        uses: LizardByte/.github/actions/setup_python2@nightly
+
+      - name: Set up Python 2.7 Dependencies
+        run: |
+          echo "Installing Requirements"
+          python --version
+          python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade pip setuptools wheel
+
+          # install python requirements
+          python -m pip install --upgrade -r requirements_dev.txt
+
+      - name: build
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          if-no-files-found: error  # 'warn' or 'ignore' are also available, defaults to `warn`
+          path: dist
+
+  flake8:
+    name: flake8
+    needs:
+      - backport
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: python-plexapi-backport
+
+      - name: Setup Python 2.7
+        uses: LizardByte/.github/actions/setup_python2@nightly
+
+      - name: Set up Python 2.7 Dependencies
+        run: |
+          echo "Installing Requirements"
+          python --version
+          python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade pip setuptools wheel
+
+          # install python requirements
+          python -m pip install --upgrade -r requirements_dev.txt
+
+      - name: flake8
+        run: |
+          # since we are automating this, we need to ignore more rules than we normally would
+          # also don't run against tests, as it seems that upstream is not doing this
+          python -m flake8 -v --append-config ./.flake8-backport ./plexapi
+
+  pytest:
+    name: pytest (${{ matrix.plex }}, Python ${{ matrix.python }})
+    needs:
+      - backport
+    runs-on: ubuntu-latest
+    env:
+      PLEXAPI_AUTH_SERVER_BASEURL: http://127.0.0.1:32400
+      PLEX_CONTAINER: plexinc/pms-docker
+      PLEX_CONTAINER_TAG: latest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        plex: ['unclaimed', 'claimed']
+        python: ['2.7', '3.7', '3.8', '3.9', '3.10', '3.11']
+        is-master:
+          - ${{ github.ref == 'refs/heads/master' }}
+        exclude:
+          - is-master: false
+            plex: claimed
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: python-plexapi-backport
+
+      - name: Setup Python 2.7
+        if: matrix.python == '2.7'
+        uses: LizardByte/.github/actions/setup_python2@nightly
+
+      - name: Setup Python ${{ matrix.python }}
+        if: matrix.python != '2.7'
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Set up Python Dependencies
+        run: |
+          echo "Installing Requirements"
+          python --version
+          python -m pip --no-python-version-warning --disable-pip-version-check install --upgrade pip setuptools wheel
+
+          # install python requirements
+          python -m pip install --upgrade -r requirements_dev.txt
+
+          # install python-plexapi-backport
+          python -m pip install -e .
+
+      - name: Get PMS Docker image digest
+        id: docker-digest
+        run: |
+          mkdir -p ~/.cache/docker/${{ env.PLEX_CONTAINER }}
+          echo "Image: ${{ env.PLEX_CONTAINER }}"
+          echo "Tag: ${{ env.PLEX_CONTAINER_TAG }}"
+          token=$(curl \
+            --silent \
+            "https://auth.docker.io/token?scope=repository:${{ env.PLEX_CONTAINER }}:pull&service=registry.docker.io" \
+            | jq -r '.token')
+          digest=$(curl \
+            --silent \
+            --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+            --header "Authorization: Bearer $token" \
+            "https://registry-1.docker.io/v2/${{ env.PLEX_CONTAINER }}/manifests/${{ env.PLEX_CONTAINER_TAG }}" \
+            | jq -r '.config.digest')
+          echo "Digest: $digest"
+          echo "digest=$digest" >> $GITHUB_OUTPUT
+
+      - name: Cache PMS Docker image
+        id: docker-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/docker/plexinc
+          key: ${{ runner.os }}-docker-pms-${{ steps.docker-digest.outputs.digest }}
+
+      - name: Pull PMS Docker image
+        if: steps.docker-cache.outputs.cache-hit != 'true'
+        run: |
+          docker pull ${{ env.PLEX_CONTAINER }}:${{ env.PLEX_CONTAINER_TAG }}
+          docker save -o ~/.cache/docker/${{ env.PLEX_CONTAINER }}-${{ env.PLEX_CONTAINER_TAG }}.tar ${{ env.PLEX_CONTAINER }}:${{ env.PLEX_CONTAINER_TAG }}
+          echo "Saved image: ${{ env.PLEX_CONTAINER }}:${{ env.PLEX_CONTAINER_TAG }}"
+
+      - name: Load PMS Docker image
+        if: steps.docker-cache.outputs.cache-hit == 'true'
+        run: |
+          docker load -i ~/.cache/docker/${{ env.PLEX_CONTAINER }}-${{ env.PLEX_CONTAINER_TAG }}.tar
+
+      - name: Set Plex credentials
+        if: matrix.plex == 'claimed'
+        run: |
+          echo "PLEXAPI_AUTH_SERVER_TOKEN=${{ secrets.PLEXAPI_AUTH_SERVER_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Bootstrap ${{ matrix.plex }} Plex server
+        run: |
+          python \
+            -u tools/plex-bootstraptest.py \
+            --destination plex \
+            --advertise-ip 127.0.0.1 \
+            --bootstrap-timeout 540 \
+            --docker-tag ${{ env.PLEX_CONTAINER_TAG }} \
+            --${{ matrix.plex }}
+          # python -u tools/plex-bootstraptest.py --destination plex --advertise-ip 127.0.0.1 --bootstrap-timeout 540 --docker-tag latest --unclaimed
+
+      - name: Main tests with ${{ matrix.plex }} server
+        env:
+          TEST_ACCOUNT_ONCE: ${{ matrix.plex == 'unclaimed' }}
+        run: |
+          python -m pytest \
+            -rxXs \
+            --ignore=tests/test_sync.py \
+            --tb=native \
+            --verbose \
+            --cov=plexapi \
+            tests
+
+      - name: Unlink PMS from MyPlex account
+        if: matrix.plex == 'claimed' && always()
+        run: |
+          python -u tools/plex-teardowntest.py
+
+  publish:
+    name: Publish
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs:
+      - backport
+      - build
+      - flake8
+      - pytest
+    runs-on: ubuntu-latest
+    environment:
+      name: publish
+      url: https://pypi.org/p/PlexAPI-backport
+    permissions:
+      id-token: write
+    steps:
+      - name: Checkout dist
+        uses: actions/checkout@v3
+        with:
+          ref: dist
+          path: dist_branch
+          persist-credentials: false  # otherwise, the token used is the GITHUB_TOKEN, instead of the personal token
+          fetch-depth: 0  # otherwise, will fail to push refs to dest repo
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+
+      - name: Prepare dist branch
+        run: |
+          # empty contents
+          rm -f -r ./dist_branch/*
+
+          # copy build files to dist_branch
+          cp -f -r ./dist/. ./dist_branch/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Deploy to dist branch
+        if: >-
+          (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+          (github.event_name == 'workflow_dispatch')
+        uses: actions-js/push@v1.4
+        with:
+          github_token: ${{ secrets.GH_BOT_TOKEN }}
+          author_email: ${{ secrets.GH_BOT_EMAIL }}
+          author_name: ${{ secrets.GH_BOT_NAME }}
+          directory: dist_branch
+          branch: dist
+          force: false

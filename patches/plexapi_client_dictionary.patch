@@ -1,0 +1,24 @@
+diff --git a/plexapi/client.py b/plexapi/client.py
+index 2b4283c..6be1db0 100644
+--- a/plexapi/client.py
++++ b/plexapi/client.py
+@@ -328,8 +328,8 @@ class PlexClient(PlexObject):
+             'port': server_url[-1],
+             'key': media.key,
+             'protocol': server_url[0],
+-            **params,
+         }
++        command.update(params)
+         token = media._server.createToken()
+         if token:
+             command["token"] = token
+@@ -517,8 +517,8 @@ class PlexClient(PlexObject):
+             'key': media.key or playqueue.selectedItem.key,
+             'type': mediatype,
+             'containerKey': f'/playQueues/{playqueue.playQueueID}?window=100&own=1',
+-            **params,
+         }
++        command.update(params)
+         token = media._server.createToken()
+         if token:
+             command["token"] = token
