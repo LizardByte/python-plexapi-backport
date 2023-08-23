@@ -1,0 +1,13 @@
+diff --git a/plexapi/server.py b/plexapi/server.py
+index 69d5f89..cad2b96 100644
+--- a/plexapi/server.py
++++ b/plexapi/server.py
+@@ -743,7 +743,7 @@ class PlexServer(PlexObject):
+         method = method or self._session.get
+         timeout = timeout or TIMEOUT
+         log.debug('%s %s', method.__name__.upper(), url)
+-        headers = self._headers(**headers or {})
++        headers = self._headers(**(headers or {}))
+         response = method(url, headers=headers, timeout=timeout, **kwargs)
+         if response.status_code not in (200, 201, 204):
+             codename = codes.get(response.status_code)[0]

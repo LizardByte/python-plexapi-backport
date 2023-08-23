@@ -1,0 +1,13 @@
+diff --git a/plexapi/mixins.py b/plexapi/mixins.py
+index f0c21cf..1cf5ad1 100644
+--- a/plexapi/mixins.py
++++ b/plexapi/mixins.py
+@@ -27,7 +27,7 @@ class AdvancedSettingsMixin:
+         except StopIteration:
+             availablePrefs = [p.id for p in prefs]
+             raise NotFound(f'Unknown preference "{pref}" for {self.TYPE}. '
+-                           f'Available preferences: {availablePrefs}') from None
++                           f'Available preferences: {availablePrefs}')
+ 
+     def editAdvanced(self, **kwargs):
+         """ Edit a Plex object's advanced settings. """

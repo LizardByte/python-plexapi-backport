@@ -1,0 +1,40 @@
+diff --git a/plexapi/utils.py b/plexapi/utils.py
+index d1882fb..6050b85 100644
+--- a/plexapi/utils.py
++++ b/plexapi/utils.py
+@@ -227,7 +227,7 @@ def searchType(libtype):
+     except KeyError:
+         if libtype in [str(k) for k in REVERSESEARCHTYPES]:
+             return libtype
+-        raise NotFound(f'Unknown libtype: {libtype}') from None
++        raise NotFound(f'Unknown libtype: {libtype}')
+ 
+ 
+ def reverseSearchType(libtype):
+@@ -244,7 +244,7 @@ def reverseSearchType(libtype):
+     except (KeyError, ValueError):
+         if libtype in SEARCHTYPES:
+             return libtype
+-        raise NotFound(f'Unknown libtype: {libtype}') from None
++        raise NotFound(f'Unknown libtype: {libtype}')
+ 
+ 
+ def tagType(tag):
+@@ -262,7 +262,7 @@ def tagType(tag):
+     except KeyError:
+         if tag in [str(k) for k in REVERSETAGTYPES]:
+             return tag
+-        raise NotFound(f'Unknown tag: {tag}') from None
++        raise NotFound(f'Unknown tag: {tag}')
+ 
+ 
+ def reverseTagType(tag):
+@@ -279,7 +279,7 @@ def reverseTagType(tag):
+     except (KeyError, ValueError):
+         if tag in TAGTYPES:
+             return tag
+-        raise NotFound(f'Unknown tag: {tag}') from None
++        raise NotFound(f'Unknown tag: {tag}')
+ 
+ 
+ def threaded(callback, listargs):

@@ -1,0 +1,15 @@
+diff --git a/plexapi/server.py b/plexapi/server.py
+index 69d5f89..46cc0ec 100644
+--- a/plexapi/server.py
++++ b/plexapi/server.py
+@@ -1,6 +1,9 @@
+ # -*- coding: utf-8 -*-
+ import os
+-from functools import cached_property
++try:
++    from functools import cached_property
++except ImportError:
++    from cached_property import cached_property
+ from urllib.parse import urlencode
+ from xml.etree import ElementTree
+ 

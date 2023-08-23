@@ -1,0 +1,13 @@
+diff --git a/plexapi/base.py b/plexapi/base.py
+index 88a31bb..d532fac 100644
+--- a/plexapi/base.py
++++ b/plexapi/base.py
+@@ -307,7 +307,7 @@ class PlexObject:
+             return self.fetchItems(ekey, cls, **kwargs)[0]
+         except IndexError:
+             clsname = cls.__name__ if cls else 'None'
+-            raise NotFound(f'Unable to find elem: cls={clsname}, attrs={kwargs}') from None
++            raise NotFound(f'Unable to find elem: cls={clsname}, attrs={kwargs}')
+ 
+     def findItems(self, data, cls=None, initpath=None, rtag=None, **kwargs):
+         """ Load the specified data to find and build all items with the specified tag

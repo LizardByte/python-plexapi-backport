@@ -1,0 +1,13 @@
+diff --git a/tools/plex-bootstraptest.py b/tools/plex-bootstraptest.py
+index 79287db..0c22d10 100755
+--- a/tools/plex-bootstraptest.py
++++ b/tools/plex-bootstraptest.py
+@@ -506,7 +506,7 @@ if __name__ == "__main__":
+     server.settings.get("GenerateBIFBehavior").set("never")
+     server.settings.get("GenerateChapterThumbBehavior").set("never")
+     server.settings.get("LoudnessAnalysisBehavior").set("never")
+-    server.settings.save()
++    # server.settings.save()
+ 
+     sections = []
+ 

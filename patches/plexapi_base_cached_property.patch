@@ -1,0 +1,16 @@
+diff --git a/plexapi/base.py b/plexapi/base.py
+index 88a31bb..b6484a2 100644
+--- a/plexapi/base.py
++++ b/plexapi/base.py
+@@ -1,7 +1,10 @@
+ # -*- coding: utf-8 -*-
+ import re
+ import weakref
+-from functools import cached_property
++try:
++    from functools import cached_property
++except ImportError:
++    from cached_property import cached_property
+ from urllib.parse import urlencode
+ from xml.etree import ElementTree
+ 

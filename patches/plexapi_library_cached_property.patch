@@ -1,0 +1,16 @@
+diff --git a/plexapi/library.py b/plexapi/library.py
+index cbca424..3efc04d 100644
+--- a/plexapi/library.py
++++ b/plexapi/library.py
+@@ -1,7 +1,10 @@
+ # -*- coding: utf-8 -*-
+ import re
+ from datetime import datetime
+-from functools import cached_property
++try:
++    from functools import cached_property
++except ImportError:
++    from cached_property import cached_property
+ from urllib.parse import parse_qs, quote_plus, urlencode, urlparse
+ 
+ from plexapi import log, media, utils
