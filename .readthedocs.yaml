@@ -24,4 +24,6 @@ formats: all
 python:
   install:
     - requirements: requirements_dev.txt  # docs requirements
+    - method: pip
+      path: .
   system_packages: true
