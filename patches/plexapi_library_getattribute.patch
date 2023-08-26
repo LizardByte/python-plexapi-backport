@@ -1,13 +1,10 @@
 diff --git a/plexapi/library.py b/plexapi/library.py
-index cbca424..7185de8 100644
+index cbca424..f3f3427 100644
 --- a/plexapi/library.py
 +++ b/plexapi/library.py
-@@ -448,9 +448,20 @@ class LibrarySection(PlexObject):
-     def __getattribute__(self, attr):
-         # Intercept to call EditFieldMixin and EditTagMixin methods
+@@ -450,7 +450,18 @@ class LibrarySection(PlexObject):
          # based on the item type being batch multi-edited
--        value = super().__getattribute__(attr)
-+        value = super(LibrarySection, self).__getattribute__(attr)
+         value = super().__getattribute__(attr)
          if attr.startswith('_'): return value
 -        if callable(value) and 'Mixin' in value.__qualname__:
 +        import sys

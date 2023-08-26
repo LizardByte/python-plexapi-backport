@@ -1,20 +1,17 @@
 Python-PlexAPI-Backport
 =======================
-.. image:: https://img.shields.io/github/actions/workflow/status/reenignearcher/python-plexapi-backport/CI.yml.svg?branch=master&label=CI%20build&logo=github&style=for-the-badge
+.. image:: https://img.shields.io/github/actions/workflow/status/lizardbyte/python-plexapi-backport/ci.yml.svg?branch=master&label=CI%20build&logo=github&style=for-the-badge
    :alt: GitHub Workflow Status (CI)
-   :target: https://github.com/ReenigneArcher/python-plexapi-backport/actions/workflows/CI.yml?query=branch%3Amaster
+   :target: https://github.com/LizardByte/python-plexapi-backport/actions/workflows/ci.yml?query=branch%3Amaster
 .. image:: https://img.shields.io/pypi/v/PlexAPI-backport.svg?style=for-the-badge&logo=pypi&label=pypi%20package
    :alt: PyPI
    :target: https://pypi.org/project/PlexAPI-backport/
-.. image:: https://img.shields.io/github/last-commit/reenignearcher/python-plexapi-backport.svg?style=for-the-badge&label=last%20commit%20(master)
+.. image:: https://img.shields.io/readthedocs/python-plexapi-backport?label=Docs&style=for-the-badge&logo=readthedocs
+   :alt: Read the Docs
+   :target: http://python-plexapi-backport.readthedocs.io/
+.. image:: https://img.shields.io/github/last-commit/lizardbyte/python-plexapi-backport.svg?style=for-the-badge&label=last%20commit
    :alt: GitHub last commit
-   :target: https://github.com/reenignearcher/python-plexapi-backport/commits/master
-.. image:: https://img.shields.io/github/last-commit/reenignearcher/python-plexapi-backport/dist.svg?style=for-the-badge&label=last%20commit%20(dist)
-   :alt: GitHub last commit
-   :target: https://github.com/reenignearcher/python-plexapi-backport/commits/dist
-.. image:: https://img.shields.io/github/last-commit/pkkid/python-plexapi.svg?style=for-the-badge&label=last%20commit%20(upstream)
-   :alt: GitHub last commit (upstream)
-   :target: https://github.com/pkkid/python-plexapi/commits/master
+   :target: https://github.com/LizardByte/python-plexapi-backport/commits/master
 
 
 Overview
@@ -22,6 +19,9 @@ Overview
 This is a backport of `Python-PlexAPI <https://github.com/pkkid/python-plexapi>`_ to Python 2.7.
 The main purpose of this backport is to allow the library to be used within Plex Media Server plugins,
 which are currently limited to Python 2.7.
+
+Documentation is available on `Read the Docs <http://python-plexapi-backport.readthedocs.io/>`_. The documentation
+should be almost identical to the original library, with the exception that they are built with Python 2.7.
 
 This project is not affiliated with the original project, or Plex Inc.
 
@@ -48,11 +48,25 @@ This backport is tested against the same tests as the original library.
 This backport may work on some of the versions between Python 2.7 and 3.7, but they have not been tested and there is
 no guarantee that it will work.
 
-Todo
-----
+Installation
+------------
+This backport is available on PyPI as ``PlexAPI-backport``. It can be installed in several ways.
 
-* Move repo to LizardByte org
-* Add dependabot
-* Test claimed Plex server
-* Add github environment for tests and deployment
+**PyPI**
+
+.. code-block:: bash
+
+   python -m pip install plexapi-backport
+
+**git**
+
+.. code-block:: bash
+
+   python -m pip install git+https://github.com/lizardbyte/python-plexapi-backport.git@dist#egg=plexapi
+
+**github archive**
+
+.. code-block:: bash
+
+   python -m pip install https://github.com/lizardbyte/python-plexapi-backport/archive/dist.zip#egg=plexapi
 

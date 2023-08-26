@@ -1,0 +1,21 @@
+diff --git a/plexapi/myplex.py b/plexapi/myplex.py
+index c90b5d3..cf6638f 100644
+--- a/plexapi/myplex.py
++++ b/plexapi/myplex.py
+@@ -1067,7 +1067,15 @@ class MyPlexAccount(PlexObject):
+                 tag = 'Directory'
+             else:
+                 continue
+-            attrs = ''.join(f'{k}="{html.escape(str(v))}" ' for k, v in metadata.items())
++            import sys
++            if sys.version_info[0] < 3:
++                # python 2.7 needs unicode encoding
++                attrs = ''.join(
++                    '{}="{}" '.format(k, html.escape(v.encode('utf-8') if isinstance(v, unicode) else str(v)))
++                    for k, v in metadata.items()
++                )
++            else:
++                attrs = ''.join(f'{k}="{html.escape(str(v))}" ' for k, v in metadata.items())
+             xml = f'<{tag} {attrs}/>'
+             results.append(self._manuallyLoadXML(xml))
+ 
