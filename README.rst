@@ -3,12 +3,15 @@ Python-PlexAPI-Backport
 .. image:: https://img.shields.io/github/actions/workflow/status/lizardbyte/python-plexapi-backport/ci.yml.svg?branch=master&label=CI%20build&logo=github&style=for-the-badge
    :alt: GitHub Workflow Status (CI)
    :target: https://github.com/LizardByte/python-plexapi-backport/actions/workflows/ci.yml?query=branch%3Amaster
-.. image:: https://img.shields.io/pypi/v/PlexAPI-backport.svg?style=for-the-badge&logo=pypi&label=pypi%20package
-   :alt: PyPI
-   :target: https://pypi.org/project/PlexAPI-backport/
 .. image:: https://img.shields.io/readthedocs/python-plexapi-backport?label=Docs&style=for-the-badge&logo=readthedocs
    :alt: Read the Docs
    :target: http://python-plexapi-backport.readthedocs.io/
+.. image:: https://img.shields.io/codecov/c/github/LizardByte/python-plexapi-backport?flag=Python-2.7&style=for-the-badge&logo=codecov&label=codecov
+   :alt: Codecov
+   :target: https://codecov.io/gh/LizardByte/python-plexapi-backport
+.. image:: https://img.shields.io/pypi/v/PlexAPI-backport.svg?style=for-the-badge&logo=pypi&label=pypi%20package
+   :alt: PyPI
+   :target: https://pypi.org/project/PlexAPI-backport/
 .. image:: https://img.shields.io/github/last-commit/lizardbyte/python-plexapi-backport.svg?style=for-the-badge&label=last%20commit
    :alt: GitHub last commit
    :target: https://github.com/LizardByte/python-plexapi-backport/commits/master
