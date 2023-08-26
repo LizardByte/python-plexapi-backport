@@ -1,0 +1,14 @@
+#---------------------------------------------------------
+# PlexAPI core requirements.
+# pip install -r requirements.txt
+#---------------------------------------------------------
+requests;python_version>="3.8"
+
+backports.datetime-timestamp==1.2
+backports.shutil_which==3.5.2;python_version<"3.3"
+cached-property==1.5.2;python_version<"3.8"
+configparser==4.0.2;python_version<"3"
+future==0.18.3  # needed for all versions since patched setup.py uses it
+requests==2.27.1;python_version<"3"
+typing;python_version<"3.5"
+qualname==0.1.0;python_version<"3.3"

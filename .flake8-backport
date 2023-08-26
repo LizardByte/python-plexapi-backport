@@ -1,0 +1,23 @@
+# Flake8 configuration
+
+# rules added by this backport
+# E302: expected 2 blank lines, found 1 - skipping since pasteurize may not leave blank lines in some cases
+# E402: module level import not at top of file - skipping since pasteurize imports are at top of the file instead
+# E501: line too long - skipping since future-fstrings will make lines longer
+# F401: 'module.*' imported but unused - skipping since pasteurize imports are often unused
+# F403: 'from module import *' used; unable to detect undefined names - skipping since pasteurize does this
+
+# og rules, as of 2023-08-19
+# E128: continuation line under-indented for visual indent
+# E701: multiple statements on one line (colon)
+# E702: multiple statements on one line (semicolon)
+# E731: do not assign a lambda expression, use a def
+# W293: blank line contains whitespace
+# W503: line break before binary operator
+# W605: invalid escape sequence
+
+# temporary rules
+# F812 list comprehension redefines name from line N
+# can remove if https://github.com/pkkid/python-plexapi/pull/1221 is merged
+[flake8]
+ignore=E302,E402,E501,F401,F403,E128,E701,E702,E731,W293,W503,W605,F812
