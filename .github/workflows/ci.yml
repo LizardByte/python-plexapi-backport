@@ -420,10 +420,12 @@ jobs:
     name: Process test coverage (${{ matrix.plex }})
     runs-on: ubuntu-latest
     needs: pytest
-    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: always()  # code coverage tracks coverage on all branches
     strategy:
+      fail-fast: false
       matrix:
         plex: ['unclaimed', 'claimed']
+        python: ['2.7', '3.7', '3.8', '3.9', '3.10', '3.11']
         trusted:
           - if: >-
               (github.event_name == 'pull_request' && github.event.pull_request.head.owner.login == 'LizardByte') ||
@@ -457,18 +459,20 @@ jobs:
 
       - name: Combine ${{ matrix.plex }} coverage results
         run: |
-          coverage combine coverage-${{ matrix.plex }}*/.coverage*
+          coverage combine coverage-${{ matrix.plex }}-${{ matrix.python }}/.coverage*
           coverage report --fail-under=50
           coverage xml
 
       - name: Upload ${{ matrix.plex }} coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          flags: ${{ matrix.plex }}
+          flags: Plex-${{ matrix.plex }},Python-${{ matrix.python }}
 
   publish:
     name: Publish
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      (github.event_name == 'workflow_dispatch')
     needs:
       - backport
       - build
@@ -489,10 +493,19 @@ jobs:
           persist-credentials: false  # otherwise, the token used is the GITHUB_TOKEN, instead of the personal token
           fetch-depth: 0  # otherwise, will fail to push refs to dest repo
 
-      - name: Download artifacts
+      - name: Download backport artifacts
+        # this will be published to dist branch
+        uses: actions/download-artifact@v3
+        with:
+          name: python-plexapi-backport
+          path: python-plexapi-backport
+
+      - name: Download dist artifacts
+        # this will be published to PyPI
         uses: actions/download-artifact@v3
         with:
           name: dist
+          path: dist
 
       - name: Prepare dist branch
         run: |
@@ -500,15 +513,12 @@ jobs:
           rm -f -r ./dist_branch/*
 
           # copy build files to dist_branch
-          cp -f -r ./dist/. ./dist_branch/
+          cp -f -r ./python-plexapi-backport/. ./dist_branch/
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 
       - name: Deploy to dist branch
-        if: >-
-          (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
-          (github.event_name == 'workflow_dispatch')
         uses: actions-js/push@v1.4
         with:
           github_token: ${{ secrets.GH_BOT_TOKEN }}
