@@ -468,6 +468,14 @@ jobs:
         with:
           flags: Plex-${{ matrix.plex }},Python-${{ matrix.python }}
 
+      # due to running pytest on a patched version, the code lines will not match without overriding the branch
+      - name: Upload ${{ matrix.plex }} coverage to Codecov (dist)
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/master')
+        uses: codecov/codecov-action@v3
+        with:
+          flags: Plex-${{ matrix.plex }},Python-${{ matrix.python }}
+          override_branch: dist
+
   publish:
     name: Publish
     if: >-
