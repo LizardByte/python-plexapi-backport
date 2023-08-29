@@ -1,25 +1,26 @@
 diff --git a/plexapi/server.py b/plexapi/server.py
-index 69d5f89..e62901a 100644
+index bda1cd6..c45bf24 100644
 --- a/plexapi/server.py
 +++ b/plexapi/server.py
-@@ -29,6 +29,7 @@ from plexapi import photo as _photo  # noqa: F401
+@@ -29,6 +29,8 @@ from plexapi import photo as _photo  # noqa: F401
  from plexapi import playlist as _playlist  # noqa: F401
  from plexapi import video as _video  # noqa: F401
  
 +from backports.datetime_timestamp import timestamp
++
  
  class PlexServer(PlexObject):
      """ This is the main entry point to interacting with a Plex server. It allows you to
-@@ -660,7 +661,7 @@ class PlexServer(PlexObject):
+@@ -665,7 +667,7 @@ class PlexServer(PlexObject):
          if librarySectionID:
              args['librarySectionID'] = librarySectionID
          if mindate:
 -            args['viewedAt>'] = int(mindate.timestamp())
 +            args['viewedAt>'] = int(timestamp(mindate))
-         
+ 
          key = f'/status/sessions/history/all{utils.joinArgs(args)}'
          return self.fetchItems(key, maxresults=maxresults)
-@@ -996,7 +997,7 @@ class PlexServer(PlexObject):
+@@ -1001,7 +1003,7 @@ class PlexServer(PlexObject):
                  raise BadRequest(f'Unknown filter: {key}={value}')
              if key.startswith('at'):
                  try:
@@ -28,7 +29,7 @@ index 69d5f89..e62901a 100644
                  except AttributeError:
                      raise BadRequest(f'Time frame filter must be a datetime object: {key}={value}')
              elif key.startswith('bytes') or key == 'lan':
-@@ -1210,7 +1211,7 @@ class StatisticsBandwidth(PlexObject):
+@@ -1215,7 +1217,7 @@ class StatisticsBandwidth(PlexObject):
                  self.__class__.__name__,
                  self._clean(self.accountID),
                  self._clean(self.deviceID),
@@ -37,7 +38,7 @@ index 69d5f89..e62901a 100644
              ] if p])
          )
  
-@@ -1247,7 +1248,7 @@ class StatisticsResources(PlexObject):
+@@ -1252,7 +1254,7 @@ class StatisticsResources(PlexObject):
          self.timespan = utils.cast(int, data.attrib.get('timespan'))
  
      def __repr__(self):
