@@ -1,0 +1,21 @@
+diff --git a/plexapi/alert.py b/plexapi/alert.py
+index 2d6a18e..a082385 100644
+--- a/plexapi/alert.py
++++ b/plexapi/alert.py
+@@ -57,9 +57,13 @@ class AlertListener(threading.Thread):
+         url = self._server.url(self.key, includeToken=True).replace('http', 'ws')
+         log.info('Starting AlertListener: %s', url)
+ 
+-        self._ws = websocket.WebSocketApp(url, on_message=self._onMessage, on_error=self._onError, socket=self._socket)
+-
+-        self._ws.run_forever()
++        if websocket.__version__.split('.') < ['1', '3', '3']:
++            self._ws = websocket.WebSocketApp(url, on_message=self._onMessage, on_error=self._onError)
++            sockopt = ((socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1),) if self._socket else None
++        else:
++            self._ws = websocket.WebSocketApp(url, on_message=self._onMessage, on_error=self._onError, socket=self._socket)
++            sockopt = None
++        self._ws.run_forever(sockopt=sockopt)
+ 
+     def stop(self):
+         """ Stop the AlertListener thread. Once the notifier is stopped, it cannot be directly
