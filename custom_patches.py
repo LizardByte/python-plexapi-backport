@@ -180,6 +180,40 @@ except ImportError:
     return lines
 
 
+def pathlib_patch(lines):
+    # type: (List[str]) -> List[str]
+    """
+    Patch pathlib to be compatible with Python 2.7.
+
+    If the file contains `from pathlib import Path`, then this function will replace it.
+
+    Parameters
+    ----------
+    lines : List[str]
+        The lines of the file.
+
+    Returns
+    -------
+    List[str]
+        Updated lines.
+    """
+    target_line = "from pathlib import Path"
+    replacement = """try:
+    from pathlib import Path
+except ImportError:
+    from pathlib2 import Path
+"""
+
+    for i, line in enumerate(lines):
+        if line.strip() == target_line:
+            indentation = get_indentation(line)
+            indented_replacement = '\n'.join(
+                ['{}{}'.format(indentation, sub_line) for sub_line in replacement.split('\n')])
+            lines[i] = indented_replacement
+
+    return lines
+
+
 def raise_from_none_patch(lines):
     # type: (List[str]) -> List[str]
     """
@@ -389,6 +423,7 @@ def process_file(file_path):
 
     # these are last because they mess with indentation of imports
     lines = cached_property_patch(lines=lines)
+    lines = pathlib_patch(lines=lines)
     lines = shutil_which_patch(lines=lines)
 
     with open(file_path, 'w') as f:
