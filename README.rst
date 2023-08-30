@@ -61,15 +61,33 @@ This backport is available on PyPI as ``PlexAPI-backport``. It can be installed 
 
    python -m pip install plexapi-backport
 
+or
+
+.. code-block:: bash
+
+   python -m pip install plexapi-backport[alert]
+
 **git**
 
 .. code-block:: bash
 
-   python -m pip install git+https://github.com/lizardbyte/python-plexapi-backport.git@dist#egg=plexapi
+   python -m pip install git+https://github.com/lizardbyte/python-plexapi-backport.git@dist#egg=plexapi-backport
+
+or
+
+.. code-block:: bash
+
+   python -m pip install --install-option="--extras-require=alert" git+https://github.com/lizardbyte/python-plexapi-backport.git@dist#egg=plexapi-backport
 
 **github archive**
 
 .. code-block:: bash
 
-   python -m pip install https://github.com/lizardbyte/python-plexapi-backport/archive/dist.zip#egg=plexapi
+   python -m pip install https://github.com/lizardbyte/python-plexapi-backport/archive/dist.zip#egg=plexapi-backport
+
+or
+
+.. code-block:: bash
+
+   python -m pip install --install-option="--extras-require=alert" https://github.com/lizardbyte/python-plexapi-backport/archive/dist.zip#egg=plexapi-backport
 
