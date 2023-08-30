@@ -411,7 +411,7 @@ def test_video_Movie_upload_select_remove_subtitle(movie, subtitle):
     subname = subtitle.name.rsplit(".", 1)[0]
     assert subname in subtitles
 
-    movie.subtitleStreams()[0].setDefault()
+    movie.subtitleStreams()[0].setSelected()
     movie.reload()
 
     subtitleSelection = movie.subtitleStreams()[0]
@@ -424,7 +424,7 @@ def test_video_Movie_upload_select_remove_subtitle(movie, subtitle):
 
     try:
         os.remove(filepath)
-    except:
+    except OSError:
         pass
 
 
@@ -1465,3 +1465,15 @@ def test_video_optimize(plex, movie, tvshows, show):
         movie.optimize()
     with pytest.raises(BadRequest):
         movie.optimize(target="mobile", locationID=-100)
+
+
+def test_video_Movie_matadataDirectory(movie):
+    assert os.path.exists(os.path.join(utils.BOOTSTRAP_DATA_PATH, movie.metadataDirectory))
+
+    for poster in movie.posters():
+        if not poster.ratingKey.startswith('http'):
+            assert os.path.exists(os.path.join(utils.BOOTSTRAP_DATA_PATH, poster.resourceFilepath))
+
+    for art in movie.arts():
+        if not art.ratingKey.startswith('http'):
+            assert os.path.exists(os.path.join(utils.BOOTSTRAP_DATA_PATH, art.resourceFilepath))

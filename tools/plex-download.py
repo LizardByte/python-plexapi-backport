@@ -73,7 +73,6 @@ def get_item_from_url(url):
 if __name__ == '__main__':
     # Command line parser
     from plexapi import CONFIG
-    from tqdm import tqdm
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('-u', '--username', help='Your Plex username',
                         default=CONFIG.get('auth.myplex_username'))
@@ -91,4 +90,3 @@ if __name__ == '__main__':
             url = item._server.url('%s?download=1' % part.key)
             filepath = utils.download(url, token=item._server._token, filename=filename, savepath=os.getcwd(),
                                       session=item._server._session, showstatus=True)
-            #print('  %s' % filepath)

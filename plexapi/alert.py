@@ -5,6 +5,8 @@ from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 import json
+import socket
+from typing import Callable
 import threading
 
 from plexapi import log
@@ -37,15 +39,17 @@ class AlertListener(threading.Thread):
             callbackError (func): Callback function to call on errors. The callback function
                 will be sent a single argument 'error' which will contain the Error object.
                 :samp:`def my_callback(error): ...`
+            ws_socket (socket): Socket to use for the connection. If not specified, a new socket will be created.
     """
     key = '/:/websockets/notifications'
 
-    def __init__(self, server, callback=None, callbackError=None):
+    def __init__(self, server, callback = None, callbackError = None, ws_socket = None):
         super(AlertListener, self).__init__()
         self.daemon = True
         self._server = server
         self._callback = callback
         self._callbackError = callbackError
+        self._socket = ws_socket
         self._ws = None
 
     def run(self):
@@ -57,9 +61,14 @@ class AlertListener(threading.Thread):
         # create the websocket connection
         url = self._server.url(self.key, includeToken=True).replace('http', 'ws')
         log.info('Starting AlertListener: %s', url)
-        self._ws = websocket.WebSocketApp(url, on_message=self._onMessage,
-                                          on_error=self._onError)
-        self._ws.run_forever()
+
+        if websocket.__version__.split('.') < ['1', '3', '3']:
+            self._ws = websocket.WebSocketApp(url, on_message=self._onMessage, on_error=self._onError)
+            sockopt = ((socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1),) if self._socket else None
+        else:
+            self._ws = websocket.WebSocketApp(url, on_message=self._onMessage, on_error=self._onError, socket=self._socket)
+            sockopt = None
+        self._ws.run_forever(sockopt=sockopt)
 
     def stop(self):
         """ Stop the AlertListener thread. Once the notifier is stopped, it cannot be directly
@@ -71,10 +80,8 @@ class AlertListener(threading.Thread):
 
     def _onMessage(self, *args):
         """ Called when websocket message is received.
-            In earlier releases, websocket-client returned a tuple of two parameters: a websocket.app.WebSocketApp
-            object and the message as a STR. Current releases appear to only return the message.
+
             We are assuming the last argument in the tuple is the message.
-            This is to support compatibility with current and previous releases of websocket-client.
         """
         message = args[-1]
         try:
@@ -87,10 +94,8 @@ class AlertListener(threading.Thread):
 
     def _onError(self, *args):  # pragma: no cover
         """ Called when websocket error is received.
-            In earlier releases, websocket-client returned a tuple of two parameters: a websocket.app.WebSocketApp
-            object and the error. Current releases appear to only return the error.
+
             We are assuming the last argument in the tuple is the message.
-            This is to support compatibility with current and previous releases of websocket-client.
         """
         err = args[-1]
         try:

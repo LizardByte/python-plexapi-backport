@@ -783,7 +783,7 @@ def test_library_search_exceptions(movies):
         movies.search(sort="titleSort:bad")
 
 
-def _test_library_search(library, obj):
+def _test_library_search(library, obj):  # noqa: C901
     # Create & operator
     AndOperator = namedtuple("AndOperator", ["key", "title"])
     andOp = AndOperator("&=", "and")

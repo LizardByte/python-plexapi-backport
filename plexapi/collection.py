@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
 from __future__ import division
+from __future__ import absolute_import
 from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
+try:
+    from pathlib import Path
+except ImportError:
+    from pathlib2 import Path
 from urllib.parse import quote_plus
 
 from plexapi import media, utils
@@ -566,3 +570,9 @@ class Collection(
             raise Unsupported('Unsupported collection content')
 
         return myplex.sync(sync_item, client=client, clientId=clientId)
+
+    @property
+    def metadataDirectory(self):
+        """ Returns the Plex Media Server data directory where the metadata is stored. """
+        guid_hash = utils.sha1hash(self.guid)
+        return str(Path('Metadata') / 'Collections' / guid_hash[0] / '{}.bundle'.format((guid_hash[1:])))

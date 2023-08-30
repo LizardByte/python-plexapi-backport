@@ -310,13 +310,13 @@ class PlexAttributes(object):
     def _safe_connect(self, elem):
         try:
             return elem.connect()
-        except:
+        except Exception:
             return None
 
     def _safe_reload(self, elem):
         try:
             elem.reload()
-        except:
+        except Exception:
             pass
 
 

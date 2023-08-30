@@ -25,7 +25,7 @@ def _setting_group(setting):
     return setting.group
 
 
-def _write_settings(handle, groups, group):
+def _write_settings(handle, groups, group):  # noqa: C901
     title = GROUPNAMES.get(group, group.title())
     print('\n%s Settings\n%s' % (title, '-' * (len(title) + 9)))
     handle.write('%s Settings\n%s\n' % (title, '-' * (len(title) + 9)))

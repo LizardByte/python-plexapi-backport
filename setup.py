@@ -31,6 +31,9 @@ setup(
     url='https://github.com/LizardByte/python-plexapi-backport',
     packages=['plexapi'],
     install_requires=requirements,
+    extras_require={
+        'alert': ["websocket-client>=0.59.0"],
+    },
     python_requires='>=2.7',
     long_description=readme,
     keywords=['plex', 'api'],

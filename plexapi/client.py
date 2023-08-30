@@ -100,7 +100,7 @@ class PlexClient(PlexObject):
             raise Unsupported('Cannot reload an object not built from a URL.')
         self._initpath = self.key
         data = self.query(self.key, timeout=timeout)
-        if not data:
+        if data is None:
             raise NotFound("Client not found at {}".format((self._baseurl)))
         if self._clientIdentifier:
             client = next(

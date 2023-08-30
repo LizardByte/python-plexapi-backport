@@ -111,10 +111,14 @@ def test_history_User(account, shared_username):
     user = account.user(shared_username)
     history = user.history()
 
+    assert isinstance(history, list)
+
 
 def test_history_UserServer(account, shared_username, plex):
     userSharedServer = account.user(shared_username).server(plex.friendlyName)
     history = userSharedServer.history()
+
+    assert isinstance(history, list)
 
 
 def test_history_UserSection(account, shared_username, plex):
@@ -122,3 +126,5 @@ def test_history_UserSection(account, shared_username, plex):
         account.user(shared_username).server(plex.friendlyName).section("Movies")
     )
     history = userSharedServerSection.history()
+
+    assert isinstance(history, list)

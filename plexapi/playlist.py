@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
 from __future__ import division
+from __future__ import absolute_import
 from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
 import re
+try:
+    from pathlib import Path
+except ImportError:
+    from pathlib2 import Path
 from urllib.parse import quote_plus, unquote
 
 from plexapi import media, utils
@@ -501,3 +505,9 @@ class Playlist(
     def _getWebURL(self, base=None):
         """ Get the Plex Web URL with the correct parameters. """
         return self._server._buildWebURL(base=base, endpoint='playlist', key=self.key)
+
+    @property
+    def metadataDirectory(self):
+        """ Returns the Plex Media Server data directory where the metadata is stored. """
+        guid_hash = utils.sha1hash(self.guid)
+        return str(Path('Metadata') / 'Playlists' / guid_hash[0] / '{}.bundle'.format((guid_hash[1:])))

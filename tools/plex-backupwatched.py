@@ -10,8 +10,8 @@ from builtins import dict
 from future import standard_library
 standard_library.install_aliases()
 import argparse
-import json
 from collections import defaultdict
+import json
 from plexapi import utils
 
 SECTIONS = ('movie', 'show')
@@ -39,7 +39,7 @@ def _item_key(item):
 
 def _iter_sections(plex, opts):
     libraries = opts.libraries.split(',') if opts.libraries else []
-    libraries = [l.strip().lower() for l in libraries]
+    libraries = [lib.strip().lower() for lib in libraries]
     for section in plex.library.sections():
         title = section.title.lower()
         if section.type in SECTIONS and (not libraries or title in libraries):

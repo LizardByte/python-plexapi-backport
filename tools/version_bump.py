@@ -99,8 +99,6 @@ def main():
 
 def test_bump_version():
     """Make sure it all works."""
-    import pytest
-
     assert bump_version(Version("4.7.0"), "patch") == Version("4.7.1")
     assert bump_version(Version("4.7.0"), "minor") == Version("4.8.0")
     assert bump_version(Version("4.7.3"), "minor") == Version("4.8.0")
