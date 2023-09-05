@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
 
@@ -494,7 +494,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout dist
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: dist
           path: dist_branch
