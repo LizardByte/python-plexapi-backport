@@ -90,33 +90,31 @@ jobs:
             echo "Applying pasteurize to ${file}"
             # -x arg is not working, need to specify each fix to include
             pasteurize -j $(nproc) --verbose --write --nobackups \
-              -f libfuturize.fixes.fix_future_standard_library \
               -f libpasteurize.fixes.fix_add_all__future__imports \
-              -f libpasteurize.fixes.fix_add_future_standard_library_import \
               -f libpasteurize.fixes.fix_annotations \
               -f libpasteurize.fixes.fix_division \
               -f libpasteurize.fixes.fix_fullargspec \
               -f libpasteurize.fixes.fix_future_builtins \
-              -f libpasteurize.fixes.fix_imports \
-              -f libpasteurize.fixes.fix_imports2 \
               -f libpasteurize.fixes.fix_kwargs \
               -f libpasteurize.fixes.fix_newstyle \
-              -f libpasteurize.fixes.fix_printfunction \
               -f libpasteurize.fixes.fix_throw \
               -f libpasteurize.fixes.fix_unpacking \
               ${file}
 
-            # -f libfuturize.fixes.fix_future_standard_library \  # tbd
+            # -f libfuturize.fixes.fix_future_standard_library \  # does some install_aliases()
+
             # adds absolute import, division, print_function, unicode_literals
             # -f libpasteurize.fixes.fix_add_all__future__imports \
+
             # from future import standard_library... install_aliases()
             # -f libpasteurize.fixes.fix_add_future_standard_library_import \
+
             # -f libpasteurize.fixes.fix_annotations \  # tbd
             # -f libpasteurize.fixes.fix_division \  # division is different in Python 3
             # -f libpasteurize.fixes.fix_fullargspec \  # tbd
             # -f libpasteurize.fixes.fix_future_builtins \  # from builtins import next, round, int, str, super, etc.
             # -f libpasteurize.fixes.fix_getcwd  \  # replaces os.getcwd with os.getcwdu (unicode version)
-            # -f libpasteurize.fixes.fix_imports \  # tbd
+            # -f libpasteurize.fixes.fix_imports \  # does some install_aliases()
             # -f libpasteurize.fixes.fix_imports2 \  # from future import standard_library... install_aliases()
             # -f libpasteurize.fixes.fix_kwargs \  # tbd
             # -f libpasteurize.fixes.fix_newstyle \  # tbd
@@ -125,10 +123,16 @@ jobs:
             # -f libpasteurize.fixes.fix_unpacking \  # tbd
 
             # excluding these fixes
+            # libfuturize.fixes.fix_future_standard_library  # do not want to install_aliases()
+            # libpasteurize.fixes.fix_add_future_standard_library_import  # do not want to install_aliases()
             # libpasteurize.fixes.fix_getcwd  # cwd probably doesn't need to be unicode
+            # libpasteurize.fixes.fix_imports  # do not want to install_aliases()
+            # libpasteurize.fixes.fix_imports2  # do not want to install_aliases()
+            # libpasteurize.fixes.fix_printfunction  # print in Python 3 is okay in Python 2.7.
 
             # remove `from __future__ import unicode_literals` from each file
             echo "Removing unwanted __future__ imports from ${file}"
+            sed -i '/from __future__ import print_function/d' ${file}
             sed -i '/from __future__ import unicode_literals/d' ${file}
 
             echo "Removing unwanted from builtin imports from ${file}"
