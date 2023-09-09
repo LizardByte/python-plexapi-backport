@@ -224,6 +224,8 @@ jobs:
           python -m pip install --upgrade -r requirements_dev.txt
 
       - name: build
+        env:
+          BUILD_VERSION: ${{ github.run_number }}
         run: |
           python setup.py sdist bdist_wheel
 
