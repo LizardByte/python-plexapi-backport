@@ -6,7 +6,7 @@ Python-PlexAPI-Backport
 .. image:: https://img.shields.io/readthedocs/python-plexapi-backport?label=Docs&style=for-the-badge&logo=readthedocs
    :alt: Read the Docs
    :target: http://python-plexapi-backport.readthedocs.io/
-.. image:: https://img.shields.io/codecov/c/github/LizardByte/python-plexapi-backport?flag=Python-2.7&style=for-the-badge&logo=codecov&label=codecov
+.. image:: https://img.shields.io/codecov/c/gh/LizardByte/python-plexapi-backport?token=6YMJYJPCRN&flag=Python-2.7&style=for-the-badge&logo=codecov&label=codecov
    :alt: Codecov
    :target: https://codecov.io/gh/LizardByte/python-plexapi-backport
 .. image:: https://img.shields.io/pypi/v/PlexAPI-backport.svg?style=for-the-badge&logo=pypi&label=pypi%20package

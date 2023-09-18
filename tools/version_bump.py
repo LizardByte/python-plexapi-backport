@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Helper script to bump the current version."""
-from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 from builtins import zip
-from future import standard_library
-standard_library.install_aliases()
 import argparse
 import re
 import subprocess

@@ -10,14 +10,11 @@ It can be used manually using:
 python plex-bootraptest.py --no-docker --server-name name_of_server --account Hellowlol --password yourpassword
 
 """
-from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 from builtins import dict
 from builtins import input
 from builtins import range
-from future import standard_library
-standard_library.install_aliases()
 import argparse
 import os
 import shutil

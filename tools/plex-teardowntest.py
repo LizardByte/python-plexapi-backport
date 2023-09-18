@@ -3,11 +3,8 @@
 """
 Remove current Plex Server and a Client from MyPlex account. Useful when running tests in CI.
 """
-from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
 from plexapi.myplex import MyPlexAccount
 from plexapi.server import PlexServer
 from plexapi import X_PLEX_IDENTIFIER

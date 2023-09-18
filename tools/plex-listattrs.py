@@ -7,11 +7,8 @@ can be compared with the current object implementation in python-plexapi to trac
 new attributes and deprecate old ones.
 """
 from __future__ import division
-from __future__ import print_function
 from __future__ import absolute_import
 from builtins import round
-from future import standard_library
-standard_library.install_aliases()
 from builtins import object
 import argparse
 import copy

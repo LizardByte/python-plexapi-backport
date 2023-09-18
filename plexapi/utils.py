@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 from builtins import range
 from builtins import input
 from builtins import dict
 from builtins import map
-from future import standard_library
-standard_library.install_aliases()
 import base64
 import functools
 import json
@@ -24,7 +21,7 @@ from datetime import datetime, timedelta
 from getpass import getpass
 from hashlib import sha1
 from threading import Event, Thread
-from urllib.parse import quote
+from six.moves.urllib.parse import quote
 
 import requests
 from requests.status_codes import _codes as codes

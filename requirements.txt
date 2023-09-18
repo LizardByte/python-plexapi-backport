@@ -12,5 +12,6 @@ configparser==4.0.2;python_version<"3"
 future==0.18.3  # needed for all versions since patched setup.py uses it
 pathlib2==2.3.7.post1;python_version<"3.4"
 requests==2.27.1;python_version<"3"
+six==1.16.0
 typing;python_version<"3.5"
 qualname==0.1.0;python_version<"3.3"

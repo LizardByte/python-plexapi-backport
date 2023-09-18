@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
 from builtins import map
 from builtins import next
-from future import standard_library
-standard_library.install_aliases()
 import re
 from datetime import datetime
 try:
     from functools import cached_property
 except ImportError:
     from cached_property import cached_property
-from urllib.parse import parse_qs, quote_plus, urlencode, urlparse
+from six.moves.urllib.parse import parse_qs, quote_plus, urlencode, urlparse
 
 from plexapi import log, media, utils
 from plexapi.base import OPERATORS, PlexObject

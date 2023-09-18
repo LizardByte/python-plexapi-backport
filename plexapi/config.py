@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
 from builtins import dict
-from future import standard_library
-standard_library.install_aliases()
 import os
 from collections import defaultdict
 from configparser import ConfigParser
@@ -69,6 +66,7 @@ def reset_base_headers():
         'X-Plex-Device': plexapi.X_PLEX_DEVICE,
         'X-Plex-Device-Name': plexapi.X_PLEX_DEVICE_NAME,
         'X-Plex-Client-Identifier': plexapi.X_PLEX_IDENTIFIER,
+        'X-Plex-Language': plexapi.X_PLEX_LANGUAGE,
         'X-Plex-Sync-Version': '2',
         'X-Plex-Features': 'external-media',
     }

@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
 from builtins import next
 from builtins import range
 from builtins import object
-from future import standard_library
-standard_library.install_aliases()
 import re
 import time
-from urllib.parse import quote_plus
+from six.moves.urllib.parse import quote_plus
 
 import pytest
 from datetime import datetime

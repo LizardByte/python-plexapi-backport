@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
 def test_navigate_around_show(account, plex):
     show = plex.library.section("TV Shows").get("The 100")
     seasons = show.seasons()

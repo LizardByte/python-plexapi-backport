@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
-from urllib.parse import quote_plus
+from six.moves.urllib.parse import quote_plus
 
 import pytest
 from plexapi.exceptions import BadRequest
@@ -216,7 +213,7 @@ def test_audio_Album_get(album):
 
 def test_audio_Album_artist(album):
     artist = album.artist()
-    artist.title == "Broke For Free"
+    assert artist.title == "Broke For Free"
 
 
 @pytest.mark.xfail(reason="Changing images fails randomly")

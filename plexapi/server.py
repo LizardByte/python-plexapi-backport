@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
 from builtins import next
-from future import standard_library
-standard_library.install_aliases()
 import os
 try:
     from functools import cached_property
 except ImportError:
     from cached_property import cached_property
-from urllib.parse import urlencode
+from six.moves.urllib.parse import urlencode
 from xml.etree import ElementTree
 
 import requests
@@ -641,8 +638,8 @@ class PlexServer(PlexObject):
 
     def isLatest(self):
         """ Check if the installed version of PMS is the latest. """
-        release = self.checkForUpdate(force=True)
-        return release is None
+        release = self.query('/updater/status')
+        return utils.cast(bool, release.get('canInstall'))
 
     def installUpdate(self):
         """ Install the newest version of Plex Media Server. """

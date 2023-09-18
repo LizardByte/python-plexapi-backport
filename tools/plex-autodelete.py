@@ -13,11 +13,8 @@ a schedule and you should be all set.
 Example Crontab:
 @daily /home/atodd/plex-autodelete.py >> /home/atodd/plex-autodelete.log 2>&1
 """
-from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
 import os
 from datetime import datetime
 from plexapi.server import PlexServer

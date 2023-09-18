@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
 from builtins import hex
-from future import standard_library
-standard_library.install_aliases()
 import logging
 import os
 from logging.handlers import RotatingFileHandler
@@ -36,6 +33,7 @@ X_PLEX_VERSION = CONFIG.get('header.version', VERSION)
 X_PLEX_DEVICE = CONFIG.get('header.device', X_PLEX_PLATFORM)
 X_PLEX_DEVICE_NAME = CONFIG.get('header.device_name', uname()[1])
 X_PLEX_IDENTIFIER = CONFIG.get('header.identifier', str(hex(getnode())))
+X_PLEX_LANGUAGE = CONFIG.get('header.language', 'en')
 BASE_HEADERS = reset_base_headers()
 
 # Logging Configuration

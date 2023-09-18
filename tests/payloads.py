@@ -1,8 +1,5 @@
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
 ACCOUNT_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <user id="12345" uuid="1234567890" username="testuser" title="Test User" email="testuser@email.com" friendlyName="Test User" locale="" confirmed="1" joinedAt="946730096" emailOnlyAuth="0" hasPassword="1" protected="0" thumb="https://plex.tv/users/1234567890abcdef/avatar?c=12345" authToken="faketoken" mailingListStatus="unsubscribed" mailingListActive="0" scrobbleTypes="" country="CA" subscriptionDescription="" restricted="0" anonymous="" home="1" guest="0" homeSize="2" homeAdmin="1" maxHomeSize="15" rememberExpiresAt="1680893707" adsConsent="" adsConsentSetAt="" adsConsentReminderAt="" experimentalFeatures="0" twoFactorEnabled="1" backupCodesCreated="1">
   <subscription active="1" subscribedAt="2023-03-24 00:00:00 UTC" status="Active" paymentService="" plan="lifetime">

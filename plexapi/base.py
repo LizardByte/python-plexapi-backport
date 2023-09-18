@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
 from builtins import next
 from builtins import object
-from future import standard_library
-standard_library.install_aliases()
 import re
 import weakref
 try:
     from functools import cached_property
 except ImportError:
     from cached_property import cached_property
-from urllib.parse import urlencode
+from six.moves.urllib.parse import urlencode
 from xml.etree import ElementTree
 
 from plexapi import CONFIG, X_PLEX_CONTAINER_SIZE, log, utils
@@ -237,7 +234,7 @@ class PlexObject(object):
 
                     fetchItem(ekey, viewCount__gte=0)
                     fetchItem(ekey, Media__container__in=["mp4", "mkv"])
-                    fetchItem(ekey, guid__iregex=r"(imdb:\/\/|themoviedb:\/\/)")
+                    fetchItem(ekey, guid__iregex=r"(imdb://|themoviedb://)")
                     fetchItem(ekey, Media__Part__file__startswith="D:\\Movies")
 
         """
@@ -636,7 +633,8 @@ class PlexPartialObject(PlexObject):
         return self
 
     def saveEdits(self):
-        """ Save all the batch edits and automatically reload the object.
+        """ Save all the batch edits. The object needs to be reloaded manually,
+            if required.
             See :func:`~plexapi.base.PlexPartialObject.batchEdits` for details.
         """
         if not isinstance(self._edits, dict):
@@ -645,7 +643,7 @@ class PlexPartialObject(PlexObject):
         edits = self._edits
         self._edits = None
         self._edit(**edits)
-        return self.reload()
+        return self
 
     def refresh(self):
         """ Refreshing a Library or individual item causes the metadata for the item to be

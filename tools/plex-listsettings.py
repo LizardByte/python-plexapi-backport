@@ -5,11 +5,8 @@ Plex-ListSettings is used during development of PlexAPI and loops through availa
 setting items and separates them by group as well as display the variable type. The
 resulting list is used for the creation of docs/settingslist.rst.
 """
-from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
-from future import standard_library
-standard_library.install_aliases()
 from collections import defaultdict
 from os.path import abspath, dirname, join
 from plexapi import utils

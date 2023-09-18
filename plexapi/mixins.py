@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
 from builtins import next
 from builtins import round
 from builtins import object
-from future import standard_library
-standard_library.install_aliases()
 from backports.datetime_timestamp import timestamp
 from datetime import datetime
-from urllib.parse import parse_qsl, quote, quote_plus, unquote, urlencode, urlsplit
+from six.moves.urllib.parse import parse_qsl, quote, quote_plus, unquote, urlencode, urlsplit
 
 from plexapi import media, settings, utils
 from plexapi.exceptions import BadRequest, NotFound

@@ -9,14 +9,11 @@ Original contribution by lad1337.
 """
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import print_function
 from builtins import input
-from future import standard_library
-standard_library.install_aliases()
 import argparse
 import os
 import re
-from urllib.parse import unquote
+from six.moves.urllib.parse import unquote
 
 from plexapi import utils
 from plexapi.video import Episode, Movie, Show

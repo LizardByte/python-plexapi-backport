@@ -3,6 +3,7 @@
 """
 Install PlexAPI
 """
+import os
 from pkg_resources import parse_requirements
 try:
     from setuptools import setup
@@ -13,6 +14,11 @@ except ImportError:
 version = {}
 with open('plexapi/const.py') as handle:
     exec(handle.read(), version)
+
+try:
+    version['__version__'] += "-{}".format(os.environ['BUILD_NUMBER'])
+except KeyError:
+    pass
 
 # Get README.rst contents
 with open('README.rst') as handle:
