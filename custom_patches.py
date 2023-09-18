@@ -351,6 +351,37 @@ def super_patch(lines):
     return output_lines
 
 
+def urllib_imports_patch(lines):
+    # type: (List[str]) -> List[str]
+    """
+    Patch urllib imports to be compatible with Python 2.7.
+
+    If the file contains `from urllib.parse import`, then this function will replace it with
+    `from six.moves.urllib.parse import`.
+
+    Parameters
+    ----------
+    lines
+        The lines of the file.
+
+    Returns
+    -------
+    List[str]
+        Updated lines.
+    """
+    patched_lines = []
+
+    for line in lines:
+        if 'from urllib.parse import' in line:
+            # Just replace the original module path with six.moves
+            new_import_line = line.replace('from urllib.parse', 'from six.moves.urllib.parse')
+            patched_lines.append(new_import_line)
+        else:
+            patched_lines.append(line)
+
+    return patched_lines
+
+
 def yield_from_patch(lines):
     # type: (List[str]) -> List[str]
     """
@@ -419,6 +450,7 @@ def process_file(file_path):
     lines = arg_unpack_patch(lines=lines)
     lines = raise_from_none_patch(lines=lines)
     lines = super_patch(lines=lines)
+    lines = urllib_imports_patch(lines=lines)
     lines = yield_from_patch(lines=lines)
 
     # these are last because they mess with indentation of imports
