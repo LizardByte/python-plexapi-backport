@@ -373,7 +373,7 @@ jobs:
 
       - name: Bootstrap ${{ matrix.plex }} Plex server
         id: boostrap
-        uses: nick-fields/retry@v2.8.3
+        uses: nick-fields/retry@v2.9.0
         with:
           max_attempts: 3
           timeout_minutes: 2
@@ -397,7 +397,7 @@ jobs:
         env:
           TEST_ACCOUNT_ONCE: ${{ matrix.plex == 'unclaimed' }}
           SHARED_USERNAME: ${{ secrets.PLEX_SHARED_USERNAME }}
-        uses: nick-fields/retry@v2.8.3
+        uses: nick-fields/retry@v2.9.0
         with:
           max_attempts: 2
           timeout_minutes: 4
