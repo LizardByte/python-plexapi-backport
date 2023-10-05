@@ -1,14 +1,7 @@
-# Flake8 configuration
-
-# rules added by this backport
-# E251: unexpected spaces around keyword / parameter equals - skipping due to different behavior in older flake8
-# E302: expected 2 blank lines, found 1 - skipping since pasteurize may not leave blank lines in some cases
-# E402: module level import not at top of file - skipping since pasteurize imports are at top of the file instead
-# E501: line too long - skipping since future-fstrings will make lines longer
-# F401: 'module.*' imported but unused - skipping since pasteurize imports are often unused
-
-# temporary rules
-# F812 list comprehension redefines name from line N
-# can remove if https://github.com/pkkid/python-plexapi/pull/1221 is merged
 [flake8]
-extend-ignore=E251,E302,E402,E501,F401
+filename =
+    *.py,
+    *.pys
+max-line-length = 120
+extend-exclude =
+    venv/
