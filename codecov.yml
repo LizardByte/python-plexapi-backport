@@ -1,6 +1,6 @@
 ---
 codecov:
-  branch: dist
+  branch: master
 
 coverage:
   status:
