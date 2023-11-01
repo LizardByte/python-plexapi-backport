@@ -233,6 +233,20 @@ jobs:
         run: |
           python setup.py sdist bdist_wheel
 
+          # rename packages to include run number
+          # https://stackoverflow.com/a/63944201
+          # original wheel name example - PlexAPI_backport-4.15.4-py2-none-any.whl
+          # new wheel name example      - PlexAPI_backport-4.15.4-{run_number}-py2-none-any.whl
+          # original tar name example   - PlexAPI-backport-4.15.4.tar.gz
+          # new tar name example        - PlexAPI-backport-4.15.4-{run_number}.tar.gz
+
+          pypi_version=$(python setup.py --version)
+          mv dist/PlexAPI_backport-${pypi_version}-py2-none-any.whl \
+            dist/PlexAPI_backport-${pypi_version}-${BUILD_VERSION}-py2-none-any.whl
+
+          mv dist/PlexAPI-backport-${pypi_version}.tar.gz \
+            dist/PlexAPI-backport-${pypi_version}-${BUILD_VERSION}.tar.gz
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
