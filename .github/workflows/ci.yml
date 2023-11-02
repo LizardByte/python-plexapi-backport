@@ -241,12 +241,21 @@ jobs:
           # new tar name example        - PlexAPI-backport-4.15.4-{run_number}.tar.gz
 
           pypi_version=$(python setup.py --version)
-          mv dist/PlexAPI_backport-${pypi_version}-py2-none-any.whl \
-            dist/PlexAPI_backport-${pypi_version}-${BUILD_VERSION}-py2-none-any.whl
 
           # upload fails if using `-` instead of `_` even though that is in the original name...
+          # https://packaging.python.org/en/latest/specifications/binary-distribution-format/#escaping-and-unicode
+
+          # rename wheel
+          mv dist/PlexAPI_backport-${pypi_version}-py2-none-any.whl \
+            dist/plexapi_backport-${pypi_version}-${BUILD_VERSION}-py2-none-any.whl
+
+          # rename tar
           mv dist/PlexAPI-backport-${pypi_version}.tar.gz \
-            dist/PlexAPI_backport-${pypi_version}-${BUILD_VERSION}.tar.gz
+            dist/plexapi_backport-${pypi_version}-${BUILD_VERSION}.tar.gz
+
+          # list dist files
+          echo "dist files:"
+          ls -a ./dist
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
