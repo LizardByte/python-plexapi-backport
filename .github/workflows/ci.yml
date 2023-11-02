@@ -244,8 +244,9 @@ jobs:
           mv dist/PlexAPI_backport-${pypi_version}-py2-none-any.whl \
             dist/PlexAPI_backport-${pypi_version}-${BUILD_VERSION}-py2-none-any.whl
 
+          # upload fails if using `-` instead of `_` even though that is in the original name...
           mv dist/PlexAPI-backport-${pypi_version}.tar.gz \
-            dist/PlexAPI-backport-${pypi_version}-${BUILD_VERSION}.tar.gz
+            dist/PlexAPI_backport-${pypi_version}-${BUILD_VERSION}.tar.gz
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
