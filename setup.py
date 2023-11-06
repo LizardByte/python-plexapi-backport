@@ -3,7 +3,6 @@
 """
 Install PlexAPI
 """
-import os
 from pkg_resources import parse_requirements
 try:
     from setuptools import setup
@@ -14,11 +13,6 @@ except ImportError:
 version = {}
 with open('plexapi/const.py') as handle:
     exec(handle.read(), version)
-
-try:
-    version['__version__'] += "-{}".format(os.environ['BUILD_NUMBER'])
-except KeyError:
-    pass
 
 # Get README.rst contents
 with open('README.rst') as handle:
@@ -33,7 +27,7 @@ setup(
     version=version['__version__'],
     description='Python bindings for the Plex API.',
     author='LizardByte',
-    author_email='LizardByte@ithub.com',
+    author_email='LizardByte@github.com',
     url='https://github.com/LizardByte/python-plexapi-backport',
     packages=['plexapi'],
     install_requires=requirements,
@@ -42,6 +36,7 @@ setup(
     },
     python_requires='>=2.7',
     long_description=readme,
+    long_description_content_type='text/x-rst',
     keywords=['plex', 'api'],
     classifiers=[
         'Operating System :: OS Independent',
