@@ -1,28 +1,8 @@
 diff --git a/setup.py b/setup.py
-index 2c80ffa..1ed1d74 100644
+index 7e87e12..c81820c 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -3,6 +3,7 @@
- """
- Install PlexAPI
- """
-+import os
- from pkg_resources import parse_requirements
- try:
-     from setuptools import setup
-@@ -14,6 +15,11 @@ version = {}
- with open('plexapi/const.py') as handle:
-     exec(handle.read(), version)
- 
-+try:
-+    version['__version__'] += "-{}".format(os.environ['BUILD_NUMBER'])
-+except KeyError:
-+    pass
-+
- # Get README.rst contents
- with open('README.rst') as handle:
-     readme = handle.read()
-@@ -23,22 +29,23 @@ with open('requirements.txt') as handle:
+@@ -23,23 +23,24 @@ with open('requirements.txt') as handle:
      requirements = [str(req) for req in parse_requirements(handle)]
  
  setup(
@@ -34,7 +14,7 @@ index 2c80ffa..1ed1d74 100644
 -    author_email='michael.shepanski@gmail.com',
 -    url='https://github.com/pkkid/python-plexapi',
 +    author='LizardByte',
-+    author_email='LizardByte@ithub.com',
++    author_email='LizardByte@github.com',
 +    url='https://github.com/LizardByte/python-plexapi-backport',
      packages=['plexapi'],
      install_requires=requirements,
@@ -45,6 +25,7 @@ index 2c80ffa..1ed1d74 100644
 -    python_requires='>=3.8',
 +    python_requires='>=2.7',
      long_description=readme,
+     long_description_content_type='text/x-rst',
      keywords=['plex', 'api'],
      classifiers=[
          'Operating System :: OS Independent',
