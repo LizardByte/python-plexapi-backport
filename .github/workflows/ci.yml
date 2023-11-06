@@ -398,19 +398,15 @@ jobs:
         env:
           TEST_ACCOUNT_ONCE: ${{ matrix.plex == 'unclaimed' }}
           SHARED_USERNAME: ${{ secrets.PLEX_SHARED_USERNAME }}
-        uses: nick-fields/retry@v2.9.0
-        with:
-          max_attempts: 2
-          timeout_minutes: 4
-          command: |
-            python -m pytest \
-              -rxXs \
-              --cache-clear \
-              --ignore=tests/test_sync.py \
-              --tb=native \
-              --verbose \
-              --cov=plexapi \
-              tests
+        run: |
+          python -m pytest \
+            -rxXs \
+            --cache-clear \
+            --ignore=tests/test_sync.py \
+            --tb=native \
+            --verbose \
+            --cov=plexapi \
+            tests
 
       - name: Unlink PMS from MyPlex account
         if: matrix.plex == 'claimed' && steps.bootstrap.outcome != 'skipped'
