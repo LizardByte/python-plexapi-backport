@@ -72,7 +72,9 @@ class AdvancedSettingsMixin(object):
 class SmartFilterMixin(object):
     """ Mixin for Plex objects that can have smart filters. """
 
-    def _parseFilterGroups(self, feed, returnOn=None):
+    def _parseFilterGroups(
+        self, feed, returnOn=None
+    ):
         """ Parse filter groups from input lines between push and pop. """
         currentFiltersStack = []
         operatorForStack = None

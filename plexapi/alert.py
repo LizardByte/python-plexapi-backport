@@ -40,7 +40,7 @@ class AlertListener(threading.Thread):
     """
     key = '/:/websockets/notifications'
 
-    def __init__(self, server, callback = None, callbackError = None, ws_socket = None):
+    def __init__(self, server, callback=None, callbackError=None, ws_socket=None):
         super(AlertListener, self).__init__()
         self.daemon = True
         self._server = server

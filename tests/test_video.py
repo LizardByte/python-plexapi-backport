@@ -612,9 +612,9 @@ def test_video_Movie_batchEdits(movie):
     new_summary = "New summary"
     new_tagline = "New tagline"
     new_studio = "New studio"
-    movie.editTitle(new_title) \
-        .editSummary(new_summary) \
-        .editTagline(new_tagline) \
+    movie.editTitle(new_title)\
+        .editSummary(new_summary)\
+        .editTagline(new_tagline)\
         .editStudio(new_studio)
     assert movie._edits != {}
     movie.saveEdits().reload()
@@ -624,11 +624,11 @@ def test_video_Movie_batchEdits(movie):
     assert movie.tagline == new_tagline
     assert movie.studio == new_studio
 
-    movie.batchEdits() \
-        .editTitle(title, locked=False) \
-        .editSummary(summary, locked=False) \
-        .editTagline(tagline, locked=False) \
-        .editStudio(studio, locked=False) \
+    movie.batchEdits()\
+        .editTitle(title, locked=False)\
+        .editSummary(summary, locked=False)\
+        .editTagline(tagline, locked=False)\
+        .editStudio(studio, locked=False)\
         .saveEdits().reload()
     assert movie.title == title
     assert movie.summary == summary
