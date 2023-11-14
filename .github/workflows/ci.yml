@@ -36,6 +36,13 @@ jobs:
         with:
           python-version: '2.7'
 
+      - name: Set up Python 3
+        id: python3
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          update-environment: false
+
       - name: Set up Python Dependencies
         run: |
           echo "Installing Requirements"
@@ -44,6 +51,15 @@ jobs:
 
           # install python requirements
           python -m pip install --upgrade -r requirements_dev.txt
+
+      - name: Set up Python 3 Dependencies
+        run: |
+          echo "Installing Requirements"
+          ${{ steps.python3.outputs.python-path }} --version
+          ${{ steps.python3.outputs.python-path }} -m pip install --upgrade pip setuptools wheel
+
+          # install python requirements
+          ${{ steps.python3.outputs.python-path }} -m pip install --upgrade -r requirements_dev.txt
 
       - name: Find python files
         id: find_files
@@ -83,7 +99,16 @@ jobs:
             # remove the temp file
             rm -f ${temp_file}
 
+            # strip type hints
+            echo "Stripping type hints from ${file}"
+            # this must run under Python 3 due to https://github.com/abarker/strip-hints/issues/5
+            # update path env with directory name of where python 3 installs
+            TEMP_PATH=$(${{ steps.python3.outputs.python-path }} -c "import sys, os; \
+              print(os.path.dirname(sys.executable))")
+            PATH="$TEMP_PATH:$PATH" strip-hints --inplace ${file}
+
             # apply custom LizardByte patches
+            echo "Applying custom patches to ${file}"
             python ../custom_patches.py ${file}
 
             echo "Applying autopep8 to ${file}"
