@@ -1,30 +1,17 @@
 diff --git a/plexapi/mixins.py b/plexapi/mixins.py
-index ea6a075..c0881f5 100644
+index efe09e1..80acc8c 100644
 --- a/plexapi/mixins.py
 +++ b/plexapi/mixins.py
-@@ -8,6 +8,7 @@ from plexapi import media, settings, utils
+@@ -8,6 +8,8 @@ from plexapi import media, settings, utils
  from plexapi.exceptions import BadRequest, NotFound
  from plexapi.utils import deprecated, openOrRead
  
 +from backports.datetime_timestamp import timestamp
++
  
  class AdvancedSettingsMixin:
      """ Mixin for Plex objects that can have advanced settings. """
-@@ -65,11 +66,9 @@ class AdvancedSettingsMixin:
- class SmartFilterMixin:
-     """ Mixin for Plex objects that can have smart filters. """
- 
--    def _parseFilterGroups(
--        self, feed: "deque[Tuple[str, str]]", returnOn: "set[str]|None" = None
--    ) -> dict:
-+    def _parseFilterGroups(self, feed, returnOn = None):
-         """ Parse filter groups from input lines between push and pop. """
--        currentFiltersStack: list[dict] = []
-+        currentFiltersStack = []
-         operatorForStack = None
-         if returnOn is None:
-             returnOn = set("pop")
-@@ -563,9 +562,9 @@ class AddedAtMixin(EditFieldMixin):
+@@ -564,9 +566,9 @@ class AddedAtMixin(EditFieldMixin):
                  locked (bool): True (default) to lock the field, False to unlock the field.
          """
          if isinstance(addedAt, str):
