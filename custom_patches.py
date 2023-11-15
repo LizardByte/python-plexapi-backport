@@ -242,6 +242,44 @@ def raise_from_none_patch(lines):
     return lines
 
 
+def remove_trailing_commas(lines):
+    """
+    Remove the trailing comma from the last argument in function definitions.
+    Handles cases for both single line and multiline definitions.
+
+    Parameters
+    ----------
+    lines : List[str]
+        The lines of the file.
+
+    Returns
+    -------
+    List[str]
+        Updated lines.
+    """
+    for i in range(len(lines) - 1):
+        line = lines[i].rstrip()
+        next_line = lines[i + 1].strip()
+
+        # Handle single line function definition with trailing comma
+        if line.startswith('def ') and ',):' in line:
+            lines[i] = line.replace(',):', '):') + '\n'
+
+        # Handle multiline function definitions
+        elif line.endswith(',') and (next_line == ')' or next_line.startswith(')')):
+            lines[i] = line[:-1] + '\n'
+        elif ',):' in line:
+            # Handle cases where the function arguments end on the same line as the closing parenthesis
+            lines[i] = line.replace(',):', '):') + '\n'
+
+    # Check the last line separately
+    last_line = lines[-1].rstrip()
+    if last_line.endswith(',):'):
+        lines[-1] = last_line.replace(',):', '):') + '\n'
+
+    return lines
+
+
 def shutil_which_patch(lines):
     # type: (List[str]) -> List[str]
     """
@@ -449,6 +487,7 @@ def process_file(file_path):
 
     lines = arg_unpack_patch(lines=lines)
     lines = raise_from_none_patch(lines=lines)
+    lines = remove_trailing_commas(lines=lines)
     lines = super_patch(lines=lines)
     lines = urllib_imports_patch(lines=lines)
     lines = yield_from_patch(lines=lines)
