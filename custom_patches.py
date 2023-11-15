@@ -261,7 +261,7 @@ def remove_trailing_commas(lines):
         next_line = lines[i + 1].strip()
 
         # Handle multiline function definitions
-        if line.endswith('**kwargs,') and next_line == '):':
+        if line.endswith('**kwargs,') and next_line.startswith(')'):
             lines[i] = line[:-1] + '\n'
 
     return lines
