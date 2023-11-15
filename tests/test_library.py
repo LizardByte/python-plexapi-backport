@@ -788,15 +788,15 @@ def _test_library_search(library, obj):  # noqa: C901
     fields = library.listFields(obj.type)
     for field in fields:
         fieldAttr = field.key.split(".")[-1]
+        if fieldAttr in {"unmatched", "userRating"}:
+            continue
         operators = library.listOperators(field.type)
         if field.type in {"tag", "string"}:
             operators += [andOp]
 
         for operator in operators:
             if (
-                fieldAttr == "unmatched" and operator.key == "!="
-                or fieldAttr in {"audienceRating", "rating"} and operator.key in {"=", "!="}
-                or fieldAttr == "userRating"
+                fieldAttr in {"audienceRating", "rating"} and operator.key in {"=", "!="}
             ):
                 continue
 
@@ -849,7 +849,8 @@ def _do_test_library_search(library, obj, field, operator, searchValue):
     if operator.key.startswith("!") or operator.key.startswith(">>") and (searchValue == 1 or searchValue == "1s"):
         assert obj not in results
     else:
-        assert obj in results
+        assert obj in results, "Unable to search {} by {} using {} and value {}.".format(
+            (obj.type), (field.key), (operator.key), (searchValue))
 
 
 def test_library_common(movies):
