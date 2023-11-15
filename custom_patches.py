@@ -244,8 +244,7 @@ def raise_from_none_patch(lines):
 
 def remove_trailing_commas(lines):
     """
-    Remove the trailing comma from the last argument in function definitions.
-    Handles cases for both single line and multiline definitions.
+    Remove the trailing comma from function definitions, when there is a trailing comma after **kwargs.
 
     Parameters
     ----------
@@ -261,21 +260,9 @@ def remove_trailing_commas(lines):
         line = lines[i].rstrip()
         next_line = lines[i + 1].strip()
 
-        # Handle single line function definition with trailing comma
-        if line.startswith('def ') and ',):' in line:
-            lines[i] = line.replace(',):', '):') + '\n'
-
         # Handle multiline function definitions
-        elif line.endswith(',') and (next_line == ')' or next_line.startswith(')')):
+        if line.endswith('**kwargs,') and next_line == '):':
             lines[i] = line[:-1] + '\n'
-        elif ',):' in line:
-            # Handle cases where the function arguments end on the same line as the closing parenthesis
-            lines[i] = line.replace(',):', '):') + '\n'
-
-    # Check the last line separately
-    last_line = lines[-1].rstrip()
-    if last_line.endswith(',):'):
-        lines[-1] = last_line.replace(',):', '):') + '\n'
 
     return lines
 
