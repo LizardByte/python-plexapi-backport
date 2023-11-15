@@ -242,6 +242,31 @@ def raise_from_none_patch(lines):
     return lines
 
 
+def remove_trailing_commas(lines):
+    """
+    Remove the trailing comma from function definitions, when there is a trailing comma after **kwargs.
+
+    Parameters
+    ----------
+    lines : List[str]
+        The lines of the file.
+
+    Returns
+    -------
+    List[str]
+        Updated lines.
+    """
+    for i in range(len(lines) - 1):
+        line = lines[i].rstrip()
+        next_line = lines[i + 1].strip()
+
+        # Handle multiline function definitions
+        if line.endswith('**kwargs,') and next_line == '):':
+            lines[i] = line[:-1] + '\n'
+
+    return lines
+
+
 def shutil_which_patch(lines):
     # type: (List[str]) -> List[str]
     """
@@ -449,6 +474,7 @@ def process_file(file_path):
 
     lines = arg_unpack_patch(lines=lines)
     lines = raise_from_none_patch(lines=lines)
+    lines = remove_trailing_commas(lines=lines)
     lines = super_patch(lines=lines)
     lines = urllib_imports_patch(lines=lines)
     lines = yield_from_patch(lines=lines)

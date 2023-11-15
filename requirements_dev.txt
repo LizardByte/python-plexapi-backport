@@ -2,10 +2,6 @@
 -r requirements.txt
 # python 2.7
 # everything is specifically marked as python_version<"3" because we merge it to the existing requirements_dev.txt
-# these are for backporting the project, not needed for tests
-autopep8==1.5.7;python_version<"3"
-future-fstrings==1.2.0;python_version<"3"
-strip-hints==0.1.10;python_version>"3"  # must run in python 3 due to https://github.com/abarker/strip-hints/issues/5
 
 # this is needed for linting tests only
 flake8==3.9.2;python_version<"3"
