@@ -32,7 +32,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Set up Python
-        uses: LizardByte/setup-python-action@v2023.10.23-7bf3fc9
+        uses: LizardByte/setup-python-action@v2023.1128.10441
         with:
           python-version: '2.7'
 
@@ -240,7 +240,7 @@ jobs:
           name: python-plexapi-backport
 
       - name: Set up Python
-        uses: LizardByte/setup-python-action@v2023.10.23-7bf3fc9
+        uses: LizardByte/setup-python-action@v2023.1128.10441
         with:
           python-version: '2.7'
 
@@ -278,7 +278,7 @@ jobs:
           name: python-plexapi-backport
 
       - name: Set up Python
-        uses: LizardByte/setup-python-action@v2023.10.23-7bf3fc9
+        uses: LizardByte/setup-python-action@v2023.1128.10441
         with:
           python-version: '2.7'
 
@@ -325,7 +325,7 @@ jobs:
           name: python-plexapi-backport
 
       - name: Set up Python
-        uses: LizardByte/setup-python-action@v2023.10.23-7bf3fc9
+        uses: LizardByte/setup-python-action@v2023.1128.10441
         with:
           python-version: ${{ matrix.python }}
 
