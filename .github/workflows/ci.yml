@@ -38,7 +38,7 @@ jobs:
 
       - name: Set up Python 3
         id: python3
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           update-environment: false
@@ -470,7 +470,7 @@ jobs:
 
       - name: Set up Python
         id: python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
