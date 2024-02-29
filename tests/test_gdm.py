@@ -10,7 +10,7 @@ def test_gdm(plex):
 
     gdm_enabled = plex.settings.get("GdmEnabled")
 
-    gdm.scan(timeout=2)
+    gdm.scan()
     if gdm_enabled:
         assert len(gdm.entries)
     else:

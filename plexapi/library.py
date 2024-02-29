@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from __future__ import division
+from builtins import dict
 from builtins import map
 from builtins import next
 import re
+import warnings
+from collections import defaultdict
 from datetime import datetime
 try:
     from functools import cached_property
@@ -50,14 +53,22 @@ class Library(PlexObject):
     def _loadSections(self):
         """ Loads and caches all the library sections. """
         key = '/library/sections'
-        self._sectionsByID = {}
-        self._sectionsByTitle = {}
+        sectionsByID = {}
+        sectionsByTitle = defaultdict(list)
+        libcls = {
+            'movie': MovieSection,
+            'show': ShowSection,
+            'artist': MusicSection,
+            'photo': PhotoSection,
+        }
+
         for elem in self._server.query(key):
-            for cls in (MovieSection, ShowSection, MusicSection, PhotoSection):
-                if elem.attrib.get('type') == cls.TYPE:
-                    section = cls(self._server, elem, key)
-                    self._sectionsByID[section.key] = section
-                    self._sectionsByTitle[section.title.lower().strip()] = section
+            section = libcls.get(elem.attrib.get('type'), LibrarySection)(self._server, elem, initpath=key)
+            sectionsByID[section.key] = section
+            sectionsByTitle[section.title.lower().strip()].append(section)
+
+        self._sectionsByID = sectionsByID
+        self._sectionsByTitle = dict(sectionsByTitle)
 
     def sections(self):
         """ Returns a list of all media sections in this library. Library sections may be any of
@@ -69,17 +80,29 @@ class Library(PlexObject):
 
     def section(self, title):
         """ Returns the :class:`~plexapi.library.LibrarySection` that matches the specified title.
+            Note: Multiple library sections with the same title is ambiguous.
+            Use :func:`~plexapi.library.Library.sectionByID` instead for an exact match.
 
             Parameters:
                 title (str): Title of the section to return.
+
+            Raises:
+                :exc:`~plexapi.exceptions.NotFound`: The library section title is not found on the server.
         """
         normalized_title = title.lower().strip()
         if not self._sectionsByTitle or normalized_title not in self._sectionsByTitle:
             self._loadSections()
         try:
-            return self._sectionsByTitle[normalized_title]
+            sections = self._sectionsByTitle[normalized_title]
         except KeyError:
             raise NotFound('Invalid library section: {}'.format((title)))
+
+        if len(sections) > 1:
+            warnings.warn(
+                'Multiple library sections with the same title found, use "sectionByID" instead. '
+                'Returning the last section.'
+            )
+        return sections[-1]
 
     def sectionByID(self, sectionID):
         """ Returns the :class:`~plexapi.library.LibrarySection` that matches the specified sectionID.
@@ -2949,6 +2972,10 @@ class FilterChoice(PlexObject):
         self.thumb = data.attrib.get('thumb')
         self.title = data.attrib.get('title')
         self.type = data.attrib.get('type')
+
+    def items(self):
+        """ Returns a list of items for this filter choice. """
+        return self.fetchItems(self.fastKey)
 
 
 class ManagedHub(PlexObject):

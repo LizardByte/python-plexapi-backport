@@ -16,6 +16,7 @@ from builtins import dict
 from builtins import input
 from builtins import range
 import argparse
+from datetime import datetime
 import os
 import shutil
 import socket
@@ -515,6 +516,24 @@ if __name__ == "__main__":  # noqa: C901
     server.settings.get("GenerateBIFBehavior").set("never")
     server.settings.get("GenerateChapterThumbBehavior").set("never")
     server.settings.get("LoudnessAnalysisBehavior").set("never")
+
+    # disable butler tasks
+    current_hour = datetime.now().hour
+    start_hour = (current_hour + 12) % 24
+    end_hour = (current_hour + 15) % 24
+    server.settings.get("ButlerStartHour").set(start_hour)
+    server.settings.get("ButlerEndHour").set(end_hour)
+
+    # find all butler settings
+    for setting in server.settings.all():
+        if setting.id.lower().startswith("butler") and isinstance(setting.value, bool):
+            try:
+                setting.set(False)
+                print("Disabled setting '{}'".format(setting))
+            except NotFound:
+                print("Setting '{}' not found".format(setting))
+
+    # save settings
     server.settings.save()
 
     sections = []

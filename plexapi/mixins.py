@@ -1203,7 +1203,7 @@ class AlbumEditMixins(
 class TrackEditMixins(
     ArtLockMixin, PosterLockMixin, ThemeLockMixin,
     AddedAtMixin, TitleMixin, TrackArtistMixin, TrackNumberMixin, TrackDiscNumberMixin, UserRatingMixin,
-    CollectionMixin, LabelMixin, MoodMixin
+    CollectionMixin, GenreMixin, LabelMixin, MoodMixin
 ):
     pass
 

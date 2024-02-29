@@ -165,7 +165,7 @@ class Audio(PlexPartialObject, PlayedUnplayedMixin):
 
         return self.fetchItems(
             key,
-            cls=self.__class__,
+            cls=type(self),
             **kwargs
         )
 
@@ -231,9 +231,11 @@ class Artist(
 
     def albums(self, **kwargs):
         """ Returns a list of :class:`~plexapi.audio.Album` objects by the artist. """
+        filters = kwargs.pop('filters', {})
+        filters['artist.id'] = self.ratingKey
         return self.section().search(
             libtype='album',
-            filters={'artist.id': self.ratingKey},
+            filters=filters,
             **kwargs
         )
 
@@ -295,7 +297,7 @@ class Artist(
 @utils.registerPlexObject
 class Album(
     Audio,
-    UnmatchMatchMixin, RatingMixin,
+    SplitMergeMixin, UnmatchMatchMixin, RatingMixin,
     ArtMixin, PosterMixin, ThemeUrlMixin,
     AlbumEditMixins
 ):
@@ -433,6 +435,7 @@ class Track(
             chapterSource (str): Unknown
             collections (List<:class:`~plexapi.media.Collection`>): List of collection objects.
             duration (int): Length of the track in milliseconds.
+            genres (List<:class:`~plexapi.media.Genre`>): List of genre objects.
             grandparentArt (str): URL to album artist artwork (/library/metadata/<grandparentRatingKey>/art/<artid>).
             grandparentGuid (str): Plex GUID for the album artist (plex://artist/5d07bcb0403c64029053ac4c).
             grandparentKey (str): API URL of the album artist (/library/metadata/<grandparentRatingKey>).
@@ -455,6 +458,8 @@ class Track(
             primaryExtraKey (str) API URL for the primary extra for the track.
             ratingCount (int): Number of listeners who have scrobbled this track, as reported by Last.fm.
             skipCount (int): Number of times the track has been skipped.
+            sourceURI (str): Remote server URI (server://<machineIdentifier>/com.plexapp.plugins.library)
+                (remote playlist item only).
             viewOffset (int): View offset in milliseconds.
             year (int): Year the track was released.
     """
@@ -469,6 +474,7 @@ class Track(
         self.chapterSource = data.attrib.get('chapterSource')
         self.collections = self.findItems(data, media.Collection)
         self.duration = utils.cast(int, data.attrib.get('duration'))
+        self.genres = self.findItems(data, media.Genre)
         self.grandparentArt = data.attrib.get('grandparentArt')
         self.grandparentGuid = data.attrib.get('grandparentGuid')
         self.grandparentKey = data.attrib.get('grandparentKey')
@@ -489,6 +495,7 @@ class Track(
         self.primaryExtraKey = data.attrib.get('primaryExtraKey')
         self.ratingCount = utils.cast(int, data.attrib.get('ratingCount'))
         self.skipCount = utils.cast(int, data.attrib.get('skipCount'))
+        self.sourceURI = data.attrib.get('source')  # remote playlist item
         self.viewOffset = utils.cast(int, data.attrib.get('viewOffset', 0))
         self.year = utils.cast(int, data.attrib.get('year'))
 
