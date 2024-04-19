@@ -564,7 +564,7 @@ jobs:
           skip-existing: true  # skip existing due to how we are triggering the workflow
 
       - name: Deploy to dist branch
-        uses: actions-js/push@v1.4
+        uses: actions-js/push@v1.5
         with:
           github_token: ${{ secrets.GH_BOT_TOKEN }}
           author_email: ${{ secrets.GH_BOT_EMAIL }}
