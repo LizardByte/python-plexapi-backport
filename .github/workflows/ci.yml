@@ -235,7 +235,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-plexapi-backport
 
@@ -273,7 +273,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-plexapi-backport
 
@@ -320,7 +320,7 @@ jobs:
             plex: claimed
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-plexapi-backport
 
@@ -467,7 +467,7 @@ jobs:
             plex: claimed
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-plexapi-backport
 
@@ -487,7 +487,7 @@ jobs:
           python -m pip install --upgrade -r requirements_dev.txt
 
       - name: Download all coverage artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Combine ${{ matrix.plex }} coverage results
         run: |
@@ -539,14 +539,14 @@ jobs:
 
       - name: Download backport artifacts
         # this will be published to dist branch
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: python-plexapi-backport
           path: python-plexapi-backport
 
       - name: Download dist artifacts
         # this will be published to PyPI
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
