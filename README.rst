@@ -19,6 +19,13 @@ Python-PlexAPI-Backport
 
 Overview
 --------
+
+.. attention::
+
+   Plex is removing ALL support for plugins. This project is no longer maintained. See
+   `Plex Forum <https://forums.plex.tv/t/important-information-for-users-running-plex-media-server-on-nvidia-shield-devices/883484>`__
+   for more information.
+
 This is a backport of `Python-PlexAPI <https://github.com/pkkid/python-plexapi>`_ to Python 2.7.
 The main purpose of this backport is to allow the library to be used within Plex Media Server plugins,
 which are currently limited to Python 2.7.
